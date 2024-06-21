@@ -18,7 +18,7 @@ class UserManager(BaseUserManager):
         is_superuser=False,
         is_staff=False,
         is_active=True,
-        **extra_fields
+        **extra_fields,
     ):
         user = self.model(
             email=email,
@@ -29,7 +29,7 @@ class UserManager(BaseUserManager):
             is_superuser=is_superuser,
             is_staff=is_staff,
             is_active=is_active,
-            **extra_fields
+            **extra_fields,
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -47,7 +47,7 @@ class UserManager(BaseUserManager):
         is_superuser=True,
         is_staff=True,
         is_active=True,
-        **extra_fields
+        **extra_fields,
     ):
         if not (is_staff and is_superuser):
             raise ValueError("Superuser must have is_staff=True and is_superuser=True")
@@ -61,7 +61,7 @@ class UserManager(BaseUserManager):
             is_superuser,
             is_staff,
             is_active,
-            **extra_fields
+            **extra_fields,
         )
 
         return user
@@ -82,6 +82,12 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ["username", "first_name", "birthdate"]
 
     objects = UserManager()
+
+    @property
+    def full_name(self):
+        if self.last_name:
+            return f"{self.first_name} {self.last_name}"
+        return self.first_name
 
     def __str__(self):
         return self.username
