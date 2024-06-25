@@ -2,3 +2,12 @@
   background-color: green;
   border-color: green;
 }
+
+.form-control:focus {
+  border-color: green;
+  box-shadow: 0 0 4px 0.2rem #198754c0;
+}
+* {
+  margin: 0;
+  padding: 0;
+}

@@ -1,11 +1,16 @@
 import { useState } from "react";
-import Landing from "./Components/Landing";
+import Login from "./Components/Login";
+import Signup from "./Components/Signup";
 import "./App.css";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 function App() {
   return (
-    <>
-      <Landing />
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
