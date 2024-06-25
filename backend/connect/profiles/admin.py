@@ -28,6 +28,7 @@ class UserAdmin(BaseAdmin):
                     "email",
                     "birthdate",
                     "profile_image",
+                    "friends",
                 )
             },
         ),
