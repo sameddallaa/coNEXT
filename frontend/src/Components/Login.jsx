@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Form from "react-bootstrap/Form";
 import FloatingLabel from "react-bootstrap/esm/FloatingLabel";
 import Lottie from "lottie-react";
@@ -9,10 +9,29 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { Button } from "react-bootstrap";
 import { InputGroup, Row, Col } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import AuthContext from "../Contexts/AuthContext";
 const Login = () => {
   const [show, setShow] = useState(false);
+  const { login } = useContext(AuthContext);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
+    const { email, password } = formData;
+    try {
+      login(email, password);
+    } catch (err) {
+      console.error(err);
+    }
   };
   return (
     <div
@@ -42,6 +61,8 @@ const Login = () => {
                   type="email"
                   placeholder="Your email"
                   id="email"
+                  name="email"
+                  onChange={handleChange}
                   // className="mb-2"
                   // className="rounded-pill"
                 />
@@ -54,6 +75,8 @@ const Login = () => {
                       type="password"
                       placeholder="Your password should be atleast 8 characters long."
                       id="password"
+                      name="password"
+                      onChange={handleChange}
                     />
                     <InputGroup.Text>
                       <FaRegEye />
@@ -78,6 +101,7 @@ const Login = () => {
                     <Button
                       variant="primary"
                       className="btn-success rounded-pill w-25 mt-2"
+                      onClick={handleSubmit}
                     >
                       Login
                     </Button>
