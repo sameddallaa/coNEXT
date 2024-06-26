@@ -72,13 +72,17 @@ const Login = () => {
                   <Form.Label htmlFor="password">Password</Form.Label>
                   <InputGroup>
                     <Form.Control
-                      type="password"
+                      type={!show ? "password" : "text"}
                       placeholder="Your password should be atleast 8 characters long."
                       id="password"
                       name="password"
                       onChange={handleChange}
                     />
-                    <InputGroup.Text>
+                    <InputGroup.Text
+                      onClick={() => {
+                        setShow(!show);
+                      }}
+                    >
                       <FaRegEye />
                     </InputGroup.Text>
                   </InputGroup>

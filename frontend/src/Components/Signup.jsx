@@ -9,17 +9,49 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa6";
 import { Button } from "react-bootstrap";
 import { InputGroup, Row, Col } from "react-bootstrap";
 import { HiOutlineAtSymbol } from "react-icons/hi2";
+import axios from "axios";
 import { Link } from "react-router-dom";
 const Signup = () => {
-  const [show, setShow] = useState(false);
+  const [show1, setShow1] = useState(false);
+  const [show2, setShow2] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    username: "",
+    first_name: "",
+    birthdate: "",
+    last_name: "",
+    password: "",
+    password2: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
   const [validated, setValidated] = useState(false);
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const form = e.currentTarget;
-    if (form.checkValidity() === false) {
-      e.preventDefault();
-      e.stopPropagation();
+    const SIGNUP_ENDPOINT = "http://localhost:8000/api/users/signup";
+    try {
+      const response = await axios.post(SIGNUP_ENDPOINT, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = response.data;
+
+      if (response.status === 201) {
+        console.log(data);
+      }
+    } catch (err) {
+      console.log(err);
     }
+
+    // const form = e.currentTarget;
+    // if (form.checkValidity() === false) {
+    //   e.preventDefault();
+    //   e.stopPropagation();
+    // }
   };
   return (
     <div
@@ -47,6 +79,8 @@ const Signup = () => {
                   type="email"
                   placeholder="name@example.com"
                   id="email"
+                  name="email"
+                  onChange={handleChange}
                   required
                 />
                 <Form.Control.Feedback type="invalid">
@@ -61,6 +95,7 @@ const Signup = () => {
                     type="text"
                     id="username"
                     name="username"
+                    onChange={handleChange}
                     required
                   />
                   <Form.Control.Feedback type="invalid">
@@ -73,6 +108,7 @@ const Signup = () => {
                   type="date"
                   id="birthdate"
                   name="birthdate"
+                  onChange={handleChange}
                   //   className="mb-2"
                   placeholder=""
                   required
@@ -87,7 +123,8 @@ const Signup = () => {
                       <Form.Control
                         type="text"
                         id="firstName"
-                        name="firstName"
+                        name="first_name"
+                        onChange={handleChange}
                         // className="mb-2"
                         required
                       />
@@ -100,7 +137,8 @@ const Signup = () => {
                       <Form.Control
                         type="text"
                         id="lastName"
-                        name="lastName"
+                        name="last_name"
+                        onChange={handleChange}
                         // className="mb-2"
                       />
                       <Form.Control.Feedback type="invalid">
@@ -116,8 +154,18 @@ const Signup = () => {
                     <Col>
                       <Form.Label htmlFor="password">Password</Form.Label>
                       <InputGroup>
-                        <Form.Control type="password" id="password" required />
-                        <InputGroup.Text>
+                        <Form.Control
+                          type={!show1 ? "password" : "text"}
+                          id="password"
+                          name="password"
+                          onChange={handleChange}
+                          required
+                        />
+                        <InputGroup.Text
+                          onClick={() => {
+                            setShow1(!show1);
+                          }}
+                        >
                           <FaRegEye />
                         </InputGroup.Text>
                         <Form.Control.Feedback type="invalid">
@@ -130,8 +178,18 @@ const Signup = () => {
                         Confirm password
                       </Form.Label>
                       <InputGroup>
-                        <Form.Control type="password" id="password2" required />
-                        <InputGroup.Text>
+                        <Form.Control
+                          type={!show2 ? "password" : "text"}
+                          id="password2"
+                          name="password2"
+                          onChange={handleChange}
+                          required
+                        />
+                        <InputGroup.Text
+                          onClick={() => {
+                            setShow2(!show2);
+                          }}
+                        >
                           <FaRegEye />
                         </InputGroup.Text>
                         <Form.Control.Feedback type="invalid">
@@ -146,6 +204,7 @@ const Signup = () => {
                   <Button
                     variant="primary"
                     className="btn-success rounded-pill w-25 "
+                    onClick={handleSubmit}
                   >
                     Signup
                   </Button>
