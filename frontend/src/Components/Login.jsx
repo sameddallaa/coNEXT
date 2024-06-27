@@ -1,7 +1,6 @@
 import React from "react";
 import { useState, useContext } from "react";
 import Form from "react-bootstrap/Form";
-import FloatingLabel from "react-bootstrap/esm/FloatingLabel";
 import Lottie from "lottie-react";
 import LoginAnimation from "../assets/LoginAnimation.json";
 import classes from "../CSS/Login.module.css";
@@ -63,11 +62,7 @@ const Login = () => {
                   id="email"
                   name="email"
                   onChange={handleChange}
-                  // className="mb-2"
-                  // className="rounded-pill"
                 />
-                {/* </FloatingLabel> */}
-                {/* <FloatingLabel controlId="floatingPassword" label="Password"> */}
                 <Form.Group>
                   <Form.Label htmlFor="password">Password</Form.Label>
                   <InputGroup>
@@ -87,7 +82,6 @@ const Login = () => {
                     </InputGroup.Text>
                   </InputGroup>
                 </Form.Group>
-                {/* </FloatingLabel> */}
                 <div className="my-3">
                   <div className="d-flex flex-column">
                     <div

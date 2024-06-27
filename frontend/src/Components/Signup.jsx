@@ -1,7 +1,6 @@
 import React from "react";
 import { useState } from "react";
 import Form from "react-bootstrap/Form";
-import FloatingLabel from "react-bootstrap/esm/FloatingLabel";
 import Lottie from "lottie-react";
 import LoginAnimation from "../assets/LoginAnimation.json";
 import classes from "../CSS/Signup.module.css";
@@ -14,6 +13,7 @@ import { Link } from "react-router-dom";
 const Signup = () => {
   const [show1, setShow1] = useState(false);
   const [show2, setShow2] = useState(false);
+  const [error, setError] = useState([]);
   const [formData, setFormData] = useState({
     email: "",
     username: "",
@@ -29,6 +29,13 @@ const Signup = () => {
   };
   const [validated, setValidated] = useState(false);
   const handleSubmit = async (e) => {
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    setValidated(true);
     e.preventDefault();
     const SIGNUP_ENDPOINT = "http://localhost:8000/api/users/signup";
     try {
@@ -44,14 +51,12 @@ const Signup = () => {
         console.log(data);
       }
     } catch (err) {
-      console.log(err);
+      if (err.response.data.non_field_errors) {
+        setError(err.response.data.non_field_errors);
+      } else {
+        setError(err.response.data);
+      }
     }
-
-    // const form = e.currentTarget;
-    // if (form.checkValidity() === false) {
-    //   e.preventDefault();
-    //   e.stopPropagation();
-    // }
   };
   return (
     <div
@@ -73,7 +78,7 @@ const Signup = () => {
                   Start your journey with us!
                 </p>
               </div>
-              <Form noValidate validated={validated}>
+              <Form noValidate validated={validated} onSubmit={handleSubmit}>
                 <Form.Label htmlFor="email">Email</Form.Label>
                 <Form.Control
                   type="email"
@@ -83,11 +88,14 @@ const Signup = () => {
                   onChange={handleChange}
                   required
                 />
+                {error.email && (
+                  <p className="text-danger m-0 ms-1">{error.email}</p>
+                )}
                 <Form.Control.Feedback type="invalid">
                   Please provide a valid email address.
                 </Form.Control.Feedback>
                 <Form.Label htmlFor="username">Username</Form.Label>
-                <InputGroup>
+                <InputGroup hasValidation>
                   <InputGroup.Text>
                     <HiOutlineAtSymbol />
                   </InputGroup.Text>
@@ -95,12 +103,16 @@ const Signup = () => {
                     type="text"
                     id="username"
                     name="username"
+                    pattern="^[a-zA-Z0-9._]+$"
                     onChange={handleChange}
                     required
                   />
+                  {error.username && (
+                    <p className="text-danger m-0 ms-1">{error.username}</p>
+                  )}
                   <Form.Control.Feedback type="invalid">
                     Your username should only include alphanumeric characters,
-                    underscores, and no whitespaces.
+                    underscores, periods, and no whitespaces.
                   </Form.Control.Feedback>
                 </InputGroup>
                 <Form.Label htmlFor="birthdate">Birthdate</Form.Label>
@@ -109,12 +121,13 @@ const Signup = () => {
                   id="birthdate"
                   name="birthdate"
                   onChange={handleChange}
-                  //   className="mb-2"
-                  placeholder=""
                   required
                 />
+                {error.birthdate && (
+                  <p className="text-danger m-0 ms-1">{error.birthdate}</p>
+                )}
                 <Form.Control.Feedback type="invalid">
-                  You have to be over 13 years old.
+                  Please enter your birthdate.
                 </Form.Control.Feedback>
                 <Form.Group>
                   <Row>
@@ -125,12 +138,13 @@ const Signup = () => {
                         id="firstName"
                         name="first_name"
                         onChange={handleChange}
-                        // className="mb-2"
                         required
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Please provide a valid name.
-                      </Form.Control.Feedback>
+                      {error.first_name && (
+                        <p className="text-danger m-0 ms-1">
+                          {error.first_name}
+                        </p>
+                      )}
                     </Col>
                     <Col>
                       <Form.Label htmlFor="lastName">Last name</Form.Label>
@@ -139,21 +153,20 @@ const Signup = () => {
                         id="lastName"
                         name="last_name"
                         onChange={handleChange}
-                        // className="mb-2"
                       />
-                      <Form.Control.Feedback type="invalid">
-                        Please provide a valid name.
-                      </Form.Control.Feedback>
+                      {error.last_name && (
+                        <p className="text-danger m-0 ms-1">
+                          {error.last_name}
+                        </p>
+                      )}
                     </Col>
                   </Row>
                 </Form.Group>
-                {/* </FloatingLabel> */}
-                {/* <FloatingLabel controlId="floatingPassword" label="Password"> */}
                 <Form.Group>
                   <Row>
                     <Col>
                       <Form.Label htmlFor="password">Password</Form.Label>
-                      <InputGroup>
+                      <InputGroup hasValidation>
                         <Form.Control
                           type={!show1 ? "password" : "text"}
                           id="password"
@@ -168,6 +181,11 @@ const Signup = () => {
                         >
                           <FaRegEye />
                         </InputGroup.Text>
+                        {error.password && (
+                          <p className="text-danger m-0 ms-1">
+                            {error.password}
+                          </p>
+                        )}
                         <Form.Control.Feedback type="invalid">
                           Your password has to be atleast 8 characters long.
                         </Form.Control.Feedback>
@@ -177,7 +195,7 @@ const Signup = () => {
                       <Form.Label htmlFor="password2">
                         Confirm password
                       </Form.Label>
-                      <InputGroup>
+                      <InputGroup hasValidation>
                         <Form.Control
                           type={!show2 ? "password" : "text"}
                           id="password2"
@@ -192,24 +210,42 @@ const Signup = () => {
                         >
                           <FaRegEye />
                         </InputGroup.Text>
+                        {error.password2 && (
+                          <p className="text-danger m-0 ms-1">
+                            {error.password2}
+                          </p>
+                        )}
                         <Form.Control.Feedback type="invalid">
-                          Passwords do not match
+                          Your password has to be atleast 8 characters long.
                         </Form.Control.Feedback>
                       </InputGroup>
                     </Col>
                   </Row>
                 </Form.Group>
-                {/* </FloatingLabel> */}
                 <div className="my-3">
                   <Button
                     variant="primary"
+                    type="submit"
                     className="btn-success rounded-pill w-25 "
-                    onClick={handleSubmit}
                   >
                     Signup
                   </Button>
                 </div>
               </Form>
+              {error && (
+                <div className="error">
+                  {Array.isArray(error)
+                    ? error?.map((error, i) => (
+                        <p className="text-danger ms-1" key={i}>
+                          {error}
+                        </p>
+                      ))
+                    : Object.entries(error)?.map((key, value) => {
+                        console.log(value);
+                        return <p className="text-danger ms-1">{value[0]}</p>;
+                      })}
+                </div>
+              )}
               <div className="">
                 <p>
                   Already have an account?{" "}
