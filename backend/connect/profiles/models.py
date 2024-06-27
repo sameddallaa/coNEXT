@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from datetime import date
+from .validators import validate_birthdate, validate_username
 
 # Create your models here.
 
@@ -68,11 +69,14 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractUser):
+
     email = models.EmailField("User email", unique=True)
-    username = models.CharField("Username", max_length=255, unique=True)
+    username = models.CharField(
+        "Username", max_length=255, unique=True, validators=[validate_username]
+    )
     first_name = models.CharField("First Name", max_length=255)
     last_name = models.CharField("Last Name", max_length=255, blank=True, null=True)
-    birthdate = models.DateField("Date of birth")
+    birthdate = models.DateField("Date of birth", validators=[validate_birthdate])
     friends = models.ManyToManyField("self", blank=True)
     profile_image = models.ImageField(
         "Profile picture", upload_to="profiles_pics/", null=True, blank=True

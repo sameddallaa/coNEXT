@@ -103,17 +103,17 @@ const Signup = () => {
                     type="text"
                     id="username"
                     name="username"
-                    pattern="^[a-zA-Z0-9._]+$"
+                    // pattern="^[a-zA-Z0-9._]+$"
                     onChange={handleChange}
                     required
                   />
                   {error.username && (
                     <p className="text-danger m-0 ms-1">{error.username}</p>
                   )}
-                  <Form.Control.Feedback type="invalid">
+                  {/* <Form.Control.Feedback type="invalid">
                     Your username should only include alphanumeric characters,
-                    underscores, periods, and no whitespaces.
-                  </Form.Control.Feedback>
+                    underscores, and periods.
+                  </Form.Control.Feedback> */}
                 </InputGroup>
                 <Form.Label htmlFor="birthdate">Birthdate</Form.Label>
                 <Form.Control
