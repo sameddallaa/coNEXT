@@ -48,7 +48,7 @@ const Login = () => {
             >
               <div className="">
                 <h2 className={`${classes.formHeading}`}>
-                  Welcome back to CoNEXT!
+                  Welcome back to coNEXT!
                 </h2>
                 <p className={`${classes.formText}`}>
                   Provide your login credentials to proceed.
@@ -117,7 +117,7 @@ const Login = () => {
             </div>
           </main>
         </Col>
-        <Col>
+        <Col className="d-flex align-items-center">
           <div
             className={`${classes.LoginAnimation} mh-100 m-5 rounded-pill`}
             style={{ backgroundColor: "#e6f0dc" }}

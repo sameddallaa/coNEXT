@@ -73,7 +73,7 @@ const Signup = () => {
               className={`${classes.formContainer} d-flex flex-column justify-content-evenly`}
             >
               <div className="">
-                <h2 className={`${classes.formHeading}`}>Welcome to CoNEXT!</h2>
+                <h2 className={`${classes.formHeading}`}>Welcome to coNEXT!</h2>
                 <p className={`${classes.formText}`}>
                   Start your journey with us!
                 </p>
@@ -257,7 +257,7 @@ const Signup = () => {
             </div>
           </main>
         </Col>
-        <Col className="d-flex m-5 container-fluid">
+        <Col className="d-flex m-5 container-fluid align-items-center">
           <div
             className={`${classes.LoginAnimation} mh-100 d-flex align-items-center rounded-pill`}
             style={{ backgroundColor: "#e6f0dc" }}
