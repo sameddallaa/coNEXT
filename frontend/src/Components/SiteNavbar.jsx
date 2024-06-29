@@ -19,7 +19,7 @@ const SiteNavbar = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
   return (
-    <Navbar expand="lg">
+    <Navbar expand="lg" className="bg-light">
       <Container>
         <Navbar.Brand>
           <PiAtom className="text-success" />
@@ -104,7 +104,11 @@ const SiteNavbar = () => {
         </Navbar.Collapse>
         {width >= 992 && (
           <Dropdown>
-            <Dropdown.Toggle variant="success" id="dropdown-basic">
+            <Dropdown.Toggle
+              variant="outline-success"
+              className="rounded-pill"
+              id="dropdown-basic"
+            >
               More
             </Dropdown.Toggle>
             <Dropdown.Menu className="p-0">
