@@ -15,7 +15,6 @@ const Feed = ({ posts }) => {
             border: "none",
           }}
           className="text-secondary justify-content-end custom-select w-25"
-          id="selectBox"
         >
           <option selected>Sort by</option>
           <option value={"top"}>Top</option>

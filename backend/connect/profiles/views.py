@@ -7,7 +7,12 @@ from rest_framework.generics import (
     UpdateAPIView,
 )
 from .models import User
-from .serializers import UserSerializer, MyTokenObtainPairSerializer, SignupSerializer
+from .serializers import (
+    UserSerializer,
+    MyTokenObtainPairSerializer,
+    SignupSerializer,
+    UserFeedSerializer,
+)
 from rest_framework.views import APIView, Response, status
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.generics import GenericAPIView
@@ -45,3 +50,8 @@ class SignupView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+class UserFeedView(RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserFeedSerializer

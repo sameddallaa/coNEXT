@@ -4,6 +4,8 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import ValidationError
 from datetime import date
 from django.contrib.auth.password_validation import validate_password
+from posts.models import Post
+from posts.serializers import PostSerializer
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -74,3 +76,30 @@ class SignupSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+
+class UserFeedSerializer(serializers.ModelSerializer):
+    posts = serializers.SerializerMethodField()
+    friends = serializers.SerializerMethodField()
+
+    def get_friends(self, obj):
+        return [UserSerializer(friend).data for friend in obj.friends.all()]
+
+    def get_posts(self, obj):
+        friends = obj.friends.all()
+
+        posts = [
+            PostSerializer(post).data
+            for friend in friends
+            for post in Post.objects.filter(owner=friend)
+        ]
+        return posts
+
+    class Meta:
+        model = User
+        fields = [
+            "id",
+            "full_name",
+            "friends",
+            "posts",
+        ]
