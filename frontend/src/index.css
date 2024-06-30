@@ -7,6 +7,19 @@
   border-color: green;
   box-shadow: 0 0 4px 0.2rem #198754c0;
 }
+
+.custom-select {
+  background-color: transparent !important;
+  color: #323232 !important;
+  display: flex !important;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.custom-select:focus {
+  box-shadow: none; /* Removes focus outline */
+}
 * {
   margin: 0;
   padding: 0;

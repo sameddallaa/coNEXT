@@ -10,7 +10,7 @@ const AddPost = () => {
   };
   return (
     <>
-      <Form className="w-50 p-2 bg-light m-2 rounded">
+      <Form className="p-2 bg-light m-2 rounded">
         <div className="d-flex">
           <img
             src={pfp}
@@ -28,7 +28,6 @@ const AddPost = () => {
             <InputGroup.Text style={{ border: "none" }}>
               <Form.Group className="d-flex align-items-center">
                 <Form.Select
-                  aria-label="Default select example"
                   style={{ border: "none" }}
                   className="text-secondary rounded-pill"
                 >

@@ -17,7 +17,7 @@ const Post = ({ post }) => {
 
   return (
     <>
-      <div className="bg-light w-50 p-2 m-2 rounded">
+      <div className="bg-light p-2 m-2 rounded">
         <div className="d-flex justify-content-between m-2">
           <div className="d-flex align-items-center">
             <img
@@ -55,28 +55,32 @@ const Post = ({ post }) => {
             onClick={handleShow}
           />
         </div>
-        <div className="d-flex justify-content-around align-items-center w-50 my-2">
-          <div className="d-flex align-items-center">
+        <div className="d-flex w-50 my-2 ms-3">
+          <div className="d-flex align-items-center mx-1">
             <FaRegHeart />
             <p className="my-0 mx-1">{post.likes}</p>
           </div>
-          <div className="d-flex align-items-center">
+          <div className="d-flex align-items-center mx-1">
             <FaRegComment />
             <p className="my-0 mx-1">{post.comment_count}</p>
           </div>
-          <div>
+          <div className="d-flex align-items-center mx-1">
             <FiSend />
           </div>
         </div>
       </div>
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>{`${post.owner}'s picture`}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        // className={`${show ? "blur-background" : ""}`}
+      >
+        {/* <Modal.Header closeButton>
+          {/* <Modal.Title>{`${post.owner}'s picture`}</Modal.Title> */}
+        {/* </Modal.Header> */}
+        <Modal.Body closeButton className="p-0">
           <Image src={post.attachment} className="w-100 rounded fluid" />
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer style={{ backgroundColor: "transparent !important" }}>
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
