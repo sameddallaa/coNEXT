@@ -13,6 +13,7 @@ from .serializers import (
     SignupSerializer,
     UserFeedSerializer,
 )
+from .permissions import IsOwnerOrAdmin
 from rest_framework.views import APIView, Response, status
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.generics import GenericAPIView
@@ -52,6 +53,18 @@ class SignupView(GenericAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class UserFeedView(RetrieveAPIView):
+class UserFeedView(GenericAPIView):
     queryset = User.objects.all()
     serializer_class = UserFeedSerializer
+
+    def get(self, request, *args, **kwargs):
+        user = self.get_object()
+        if not request.data.get("post_ordering"):
+            request.data["post_ordering"] = "recent"
+        serializer = self.serializer_class(
+            user,
+            context={"request": request},
+        )
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # permission_classes = [IsOwnerOrAdmin]

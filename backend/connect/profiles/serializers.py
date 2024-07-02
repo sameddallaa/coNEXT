@@ -1,10 +1,12 @@
+from django.db.models import F, Count
+from django.db.models.functions import Coalesce
 from rest_framework import serializers
 from .models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import ValidationError
 from datetime import date
 from django.contrib.auth.password_validation import validate_password
-from posts.models import Post
+from posts.models import Post, Comment
 from posts.serializers import PostSerializer
 
 
@@ -80,19 +82,20 @@ class SignupSerializer(serializers.ModelSerializer):
 
 class UserFeedSerializer(serializers.ModelSerializer):
     posts = serializers.SerializerMethodField()
-    friends = serializers.SerializerMethodField()
-
-    def get_friends(self, obj):
-        return [UserSerializer(friend).data for friend in obj.friends.all()]
 
     def get_posts(self, obj):
         friends = obj.friends.all()
-
-        posts = [
-            PostSerializer(post).data
-            for friend in friends
-            for post in Post.objects.filter(owner=friend)
-        ]
+        request = self.context.get("request")
+        posts = []
+        for friend in friends:
+            posts += [
+                PostSerializer(post, context={"request": request}).data
+                for post in friend.posts.all()
+            ]
+        if request.data["post_ordering"] == "recent":
+            posts = sorted(posts, key=lambda x: x["posted_at"], reverse=True)
+        elif request.data["post_ordering"] == "top":
+            posts = sorted(posts, key=lambda x: x["likes"], reverse=True)
         return posts
 
     class Meta:
@@ -100,6 +103,5 @@ class UserFeedSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "full_name",
-            "friends",
             "posts",
         ]
