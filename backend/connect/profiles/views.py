@@ -16,8 +16,9 @@ from .serializers import (
 from .permissions import IsOwnerOrAdmin
 from rest_framework.views import APIView, Response, status
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import GenericAPIView
-from rest_framework import permissions
+from rest_framework import permissions, authentication
 
 # Create your views here.
 
@@ -67,4 +68,5 @@ class UserFeedView(GenericAPIView):
         )
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    # permission_classes = [IsOwnerOrAdmin]
+    authentication_classes = [JWTAuthentication, authentication.SessionAuthentication]
+    permission_classes = [IsOwnerOrAdmin]

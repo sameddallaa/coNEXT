@@ -34,6 +34,7 @@ class UserSerializer(serializers.ModelSerializer):
             "birthdate",
             "profile_image",
             "friends",
+            "is_staff",
         )
 
 
