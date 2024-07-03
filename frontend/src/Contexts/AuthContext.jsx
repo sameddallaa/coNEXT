@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
         setToken({ access: data.access, refresh: data.refresh });
         setUser(jwtDecode(data.access));
         localStorage.setItem("tokens", JSON.stringify(data));
-        // navigate("/");
+        navigate("/");
         console.log(user);
       } else {
         throw new Error();
@@ -56,7 +56,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const updateTokens = async () => {
-    const UPDATE_TOKEN_URL = import.meta.UPDATE_TOKEN_URL;
+    const UPDATE_TOKEN_URL = `http://localhost:8000/api/token/refresh/`;
     const response = await axios.post(
       UPDATE_TOKEN_URL,
       {
@@ -84,6 +84,7 @@ export const AuthProvider = ({ children }) => {
       const intervalId = setInterval(() => {
         updateTokens();
       }, 1000 * 60 * 4);
+
       return () => clearInterval(intervalId);
     }
   }, [token]);

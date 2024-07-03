@@ -16,9 +16,10 @@ function App() {
       <AuthProvider>
         <UtilsProvider>
           <Routes>
-            <Route element={<ProtectedRoute />}></Route>
-            <Route element={<LoggedOutRoute />}>
+            <Route element={<ProtectedRoute />}>
               <Route path="/" exact element={<Homepage />} />
+            </Route>
+            <Route element={<LoggedOutRoute />}>
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
             </Route>

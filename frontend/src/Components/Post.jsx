@@ -31,7 +31,7 @@ const Post = ({ post }) => {
                   style={{ textDecoration: "none", fontWeight: "500" }}
                   className="text-dark"
                 >
-                  {post.owner}
+                  {post.owner_name}
                 </Link>
               </div>
               <div>
@@ -58,7 +58,7 @@ const Post = ({ post }) => {
         <div className="d-flex w-50 my-2 ms-3">
           <div className="d-flex align-items-center mx-1">
             <FaRegHeart />
-            <p className="my-0 mx-1">{post.likes}</p>
+            <p className="my-0 mx-1">{post.like_count}</p>
           </div>
           <div className="d-flex align-items-center mx-1">
             <FaRegComment />

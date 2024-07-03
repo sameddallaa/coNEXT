@@ -78,7 +78,7 @@ const Login = () => {
                         setShow(!show);
                       }}
                     >
-                      <FaRegEye />
+                      {show ? <FaRegEyeSlash /> : <FaRegEye />}
                     </InputGroup.Text>
                   </InputGroup>
                 </Form.Group>

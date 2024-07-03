@@ -21,6 +21,7 @@ const Feed = ({ posts }) => {
           <option value={"recent"}>Recent</option>
         </Form.Select>
       </Form>
+
       {posts.map((post, index) => (
         <Post key={index} post={post} />
       ))}

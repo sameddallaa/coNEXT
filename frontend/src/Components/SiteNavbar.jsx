@@ -1,12 +1,13 @@
 import { Navbar, Nav, Container } from "react-bootstrap";
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
 import { FaSearch, FaHome, FaUserFriends } from "react-icons/fa";
 import { Form, InputGroup, Dropdown } from "react-bootstrap";
 import { BiSolidMessage } from "react-icons/bi";
 import { FaBell, FaGear, FaPowerOff } from "react-icons/fa6";
 import { PiAtom } from "react-icons/pi";
+import AuthContext from "../Contexts/AuthContext";
 const SiteNavbar = () => {
+  const { logout } = useContext(AuthContext);
   const [width, setWidth] = useState(window.innerWidth);
 
   useEffect(() => {
@@ -31,7 +32,6 @@ const SiteNavbar = () => {
               width >= 992 ? "d-flex align-items-center" : ""
             } `}
           >
-            {/* <Nav.Link href="#home"> */}
             <div>
               <Form>
                 <InputGroup>
@@ -40,15 +40,9 @@ const SiteNavbar = () => {
                   </InputGroup.Text>
                   <Form.Control type="text" placeholder="Search" />
                 </InputGroup>
-                {/* <Link to="/search">
-                  <FaSearch className="text-success" />
-                </Link> */}
-
-                {/* <Button variant="outline-success">Search</Button> */}
               </Form>
             </div>
             <>
-              {/* </Nav.Link> */}
               <Nav.Link
                 className="d-flex align-items-center mx-1 text-dark"
                 href="#about"
@@ -112,7 +106,7 @@ const SiteNavbar = () => {
               More
             </Dropdown.Toggle>
             <Dropdown.Menu className="p-0">
-              <Dropdown.Item>Logout</Dropdown.Item>
+              <Dropdown.Item onClick={() => logout()}>Logout</Dropdown.Item>
               <Dropdown.Item>Credits</Dropdown.Item>
               <Dropdown.Item>Contact us</Dropdown.Item>
             </Dropdown.Menu>
