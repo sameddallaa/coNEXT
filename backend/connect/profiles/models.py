@@ -74,8 +74,8 @@ class User(AbstractUser):
     username = models.CharField(
         "Username", max_length=255, unique=True, validators=[validate_username]
     )
-    bio = models.CharField(max_length=255, null=True, blank=True)
-    first_name = models.CharField("First Name", max_length=255)
+    bio = models.TextField(max_length=255, null=True, blank=True)
+    first_name = models.CharField("First Name", max_length=127)
     last_name = models.CharField("Last Name", max_length=255, blank=True, null=True)
     birthdate = models.DateField("Date of birth", validators=[validate_birthdate])
     friends = models.ManyToManyField("self", blank=True)

@@ -5,7 +5,7 @@ const Feed = ({ posts, image }) => {
   return (
     <div>
       <Form
-        className="d-flex justify-content-end align-items-center p-2"
+        className="d-flex justify-content-end align-items-end px-2"
         style={{
           border: "none",
         }}

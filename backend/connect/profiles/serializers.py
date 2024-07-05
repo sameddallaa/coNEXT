@@ -39,6 +39,13 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
 
+class BriefUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ("id", "username", "full_name", "profile_image")
+
+
 class SignupSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
     username = serializers.CharField(max_length=255)
@@ -83,6 +90,7 @@ class SignupSerializer(serializers.ModelSerializer):
 
 
 class UserFeedSerializer(serializers.ModelSerializer):
+    top_friends = serializers.SerializerMethodField()
     posts = serializers.SerializerMethodField()
 
     def get_posts(self, obj):
@@ -100,6 +108,9 @@ class UserFeedSerializer(serializers.ModelSerializer):
             posts = sorted(posts, key=lambda x: x["likes"], reverse=True)
         return posts
 
+    def get_top_friends(self, obj):
+        return BriefUserSerializer(obj.friends.all()[:3], many=True).data
+
     class Meta:
         model = User
         fields = [
@@ -107,5 +118,6 @@ class UserFeedSerializer(serializers.ModelSerializer):
             "full_name",
             "bio",
             "profile_image",
+            "top_friends",
             "posts",
         ]

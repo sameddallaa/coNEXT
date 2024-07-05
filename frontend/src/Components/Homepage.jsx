@@ -42,8 +42,8 @@ const Homepage = () => {
   }, [user.user_id, token.access]);
 
   return (
-    <div className="bg-secondary">
-      <Row className="m-0">
+    <div className="" style={{ backgroundColor: "#a0a0a0" }}>
+      <Row className="m-0 sticky-top">
         <SiteNavbar />
       </Row>
       <Row className="px-0 m-0 d-flex justify-content-center">
@@ -56,15 +56,16 @@ const Homepage = () => {
             </Col>
             <Col>
               <AddPost image={feed.profile_image} />
+
+              {feed ? (
+                <Feed posts={feed.posts} image={feed.profile_image} />
+              ) : (
+                <div>Homepage</div>
+              )}
             </Col>
           </>
         ) : (
           "nothing yet"
-        )}
-        {feed ? (
-          <Feed posts={feed.posts} image={feed.profile_image} />
-        ) : (
-          <div>Homepage</div>
         )}
       </Row>
     </div>
