@@ -31,6 +31,7 @@ class UserSerializer(serializers.ModelSerializer):
             "email",
             "first_name",
             "last_name",
+            "bio",
             "birthdate",
             "profile_image",
             "friends",
@@ -104,5 +105,7 @@ class UserFeedSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "full_name",
+            "bio",
+            "profile_image",
             "posts",
         ]

@@ -6,15 +6,19 @@ import Feed from "./Feed";
 import img from "../assets/img/pfp.jpg";
 import { Row, Col } from "react-bootstrap";
 import axios from "axios";
+import Lottie from "lottie-react";
+import loadingAnimation from "../assets/animations/loadingAnimation.json";
+import LeftSidebar from "./LeftSidebar";
 const Homepage = () => {
   const token = JSON.parse(localStorage.getItem("tokens"));
   const { user } = useContext(AuthContext);
   const [feed, setFeed] = useState(null);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     async function fetchFeed() {
       try {
-        const FEED_ENDPOINT = `http://localhost:8000/api/users/feed/${user.user_id}`;
-        const response = await axios.get(FEED_ENDPOINT, {
+        const HOME_ENDPOINT = `http://localhost:8000/api/users/feed/${user.user_id}`;
+        const response = await axios.get(HOME_ENDPOINT, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token.access}`,
@@ -27,19 +31,41 @@ const Homepage = () => {
         }
       } catch (error) {
         console.error(error);
+        console.log(token.access);
+      } finally {
+        setLoading(false);
+        console.log("Fetch completed");
+        console.log(feed);
       }
     }
     fetchFeed();
-  }, []);
+  }, [user.user_id, token.access]);
 
   return (
     <div className="bg-secondary">
       <Row className="m-0">
         <SiteNavbar />
       </Row>
-      <Row className="px-3 m-0">
-        <AddPost />
-        {feed ? <Feed posts={feed.posts} /> : <div>Homepage</div>}
+      <Row className="px-0 m-0 d-flex justify-content-center">
+        {loading ? (
+          <Lottie animationData={loadingAnimation} className="w-50" />
+        ) : feed ? (
+          <>
+            <Col xs={3} className="px-0">
+              <LeftSidebar owner={feed} />
+            </Col>
+            <Col>
+              <AddPost image={feed.profile_image} />
+            </Col>
+          </>
+        ) : (
+          "nothing yet"
+        )}
+        {feed ? (
+          <Feed posts={feed.posts} image={feed.profile_image} />
+        ) : (
+          <div>Homepage</div>
+        )}
       </Row>
     </div>
   );

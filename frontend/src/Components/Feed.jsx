@@ -1,9 +1,9 @@
 import React from "react";
 import Post from "./Post";
 import { Form } from "react-bootstrap";
-const Feed = ({ posts }) => {
+const Feed = ({ posts, image }) => {
   return (
-    <>
+    <div>
       <Form
         className="d-flex justify-content-end align-items-center p-2"
         style={{
@@ -23,9 +23,9 @@ const Feed = ({ posts }) => {
       </Form>
 
       {posts.map((post, index) => (
-        <Post key={index} post={post} />
+        <Post key={index} post={post} image={image} />
       ))}
-    </>
+    </div>
   );
 };
 

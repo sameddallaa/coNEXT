@@ -25,6 +25,7 @@ class UserAdmin(BaseAdmin):
                 "fields": (
                     "first_name",
                     "last_name",
+                    "bio",
                     "email",
                     "birthdate",
                     "profile_image",

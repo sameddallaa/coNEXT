@@ -3,7 +3,7 @@ import pfp from "../assets/img/pfp.jpg";
 import { Form, Modal, Button, InputGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FaAt, FaImage, FaPaperclip, FaVideo } from "react-icons/fa6";
-const AddPost = () => {
+const AddPost = ({ image }) => {
   const [post, setPost] = useState("");
   const handleChange = (e) => {
     setPost(e.target.value);
@@ -13,7 +13,7 @@ const AddPost = () => {
       <Form className="p-2 bg-light m-2 rounded">
         <div className="d-flex">
           <img
-            src={pfp}
+            src={image}
             alt="profile picture"
             style={{ width: "50px", height: "auto", borderRadius: "5000px" }}
           />

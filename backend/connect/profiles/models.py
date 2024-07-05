@@ -74,12 +74,17 @@ class User(AbstractUser):
     username = models.CharField(
         "Username", max_length=255, unique=True, validators=[validate_username]
     )
+    bio = models.CharField(max_length=255, null=True, blank=True)
     first_name = models.CharField("First Name", max_length=255)
     last_name = models.CharField("Last Name", max_length=255, blank=True, null=True)
     birthdate = models.DateField("Date of birth", validators=[validate_birthdate])
     friends = models.ManyToManyField("self", blank=True)
     profile_image = models.ImageField(
-        "Profile picture", upload_to="profiles_pics/", null=True, blank=True
+        "Profile picture",
+        upload_to="profiles_pics/",
+        null=True,
+        blank=True,
+        default="profile_pics/Default_pfp.svg",
     )
 
     USERNAME_FIELD = "email"

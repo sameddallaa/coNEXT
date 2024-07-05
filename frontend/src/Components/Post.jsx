@@ -7,21 +7,32 @@ import { BsThreeDots } from "react-icons/bs";
 import { FaRegHeart, FaRegComment } from "react-icons/fa";
 import { FiSend } from "react-icons/fi";
 
-const Post = ({ post }) => {
+const Post = ({ image, post }) => {
   // owner, content, posted_at, attachment, likes, comment_count, comments
   const { timeAgo, getFileType } = useContext(UtilsContext);
   const [show, setShow] = useState(false);
+  const [fileUrl, setFileUrl] = useState("");
   console.log(post.attachment);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-
+  const handleDownload = ({ url }) => {
+    console.log(url);
+    const fileName = url.split("/").pop();
+    console.log(fileName);
+    const aTag = document.createElement("a");
+    aTag.href = url;
+    aTag.setAttribute("download", fileName);
+    document.body.appendChild(aTag);
+    aTag.click();
+    aTag.remove();
+  };
   return (
     <>
       <div className="bg-light p-2 m-2 rounded">
         <div className="d-flex justify-content-between m-2">
           <div className="d-flex align-items-center">
             <img
-              src={pfp}
+              src={image}
               alt=""
               style={{ width: "40px", height: "auto", borderRadius: "5000px" }}
             />
@@ -69,14 +80,7 @@ const Post = ({ post }) => {
           </div>
         </div>
       </div>
-      <Modal
-        show={show}
-        onHide={handleClose}
-        // className={`${show ? "blur-background" : ""}`}
-      >
-        {/* <Modal.Header closeButton>
-          {/* <Modal.Title>{`${post.owner}'s picture`}</Modal.Title> */}
-        {/* </Modal.Header> */}
+      <Modal show={show} onHide={handleClose}>
         <Modal.Body closeButton className="p-0">
           <Image src={post.attachment} className="w-100 rounded fluid" />
         </Modal.Body>
@@ -86,9 +90,7 @@ const Post = ({ post }) => {
           </Button>
           <Button
             variant="success"
-            onClick={() => {
-              return;
-            }}
+            onClick={() => handleDownload(post.attachment)}
           >
             Download
           </Button>
