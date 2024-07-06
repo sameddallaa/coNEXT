@@ -26,6 +26,7 @@ const Post = ({ image, post }) => {
     aTag.click();
     aTag.remove();
   };
+
   return (
     <>
       <div className="bg-light p-2 m-2 rounded">

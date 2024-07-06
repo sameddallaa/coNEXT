@@ -12,7 +12,7 @@ const LeftSidebar = ({ owner }) => {
             roundedCircle
             className="me-1"
             style={{ width: "50px", height: "auto" }}
-          ></Image>
+          />
           <div className="d-flex flex-column">
             <Link
               className="text-decoration-none text-dark"
@@ -20,12 +20,10 @@ const LeftSidebar = ({ owner }) => {
             >
               {owner.full_name}
             </Link>
-            {owner.bio ? (
+            {owner.bio && (
               <div>
                 <p className="text-secondary m-0">{owner.bio}</p>
               </div>
-            ) : (
-              ""
             )}
           </div>
         </div>

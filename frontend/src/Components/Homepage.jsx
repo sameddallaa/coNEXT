@@ -4,7 +4,7 @@ import AddPost from "./AddPost";
 import AuthContext from "../Contexts/AuthContext";
 import Feed from "./Feed";
 import img from "../assets/img/pfp.jpg";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Form } from "react-bootstrap";
 import axios from "axios";
 import Lottie from "lottie-react";
 import loadingAnimation from "../assets/animations/loadingAnimation.json";
@@ -14,6 +14,7 @@ const Homepage = () => {
   const { user } = useContext(AuthContext);
   const [feed, setFeed] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [postOrdering, setPostOrdering] = useState({ post_ordering: "recent" });
   useEffect(() => {
     async function fetchFeed() {
       try {
@@ -23,6 +24,7 @@ const Homepage = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token.access}`,
           },
+          params: { post_ordering: postOrdering },
         });
         if (response.status === 200) {
           const data = response.data;
@@ -39,14 +41,14 @@ const Homepage = () => {
       }
     }
     fetchFeed();
-  }, [user.user_id, token.access]);
+  }, [user.user_id, token.access, postOrdering]);
 
   return (
     <div className="" style={{ backgroundColor: "#a0a0a0" }}>
       <Row className="m-0 sticky-top">
         <SiteNavbar />
       </Row>
-      <Row className="px-0 m-0 d-flex justify-content-center">
+      <Row className="px-0 m-0 mt-2 d-flex justify-content-center">
         {loading ? (
           <Lottie animationData={loadingAnimation} className="w-50" />
         ) : feed ? (
@@ -56,7 +58,6 @@ const Homepage = () => {
             </Col>
             <Col>
               <AddPost image={feed.profile_image} />
-
               {feed ? (
                 <Feed posts={feed.posts} image={feed.profile_image} />
               ) : (

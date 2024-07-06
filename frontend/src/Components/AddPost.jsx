@@ -9,12 +9,13 @@ const AddPost = ({ image }) => {
     setPost(e.target.value);
   };
   return (
-    <>
+    <div className="mb-5">
       <Form className="p-2 bg-light m-2 rounded">
         <div className="d-flex">
           <img
             src={image}
             alt="profile picture"
+            className="me-2"
             style={{ width: "50px", height: "auto", borderRadius: "5000px" }}
           />
           <InputGroup className="mx-1">
@@ -31,7 +32,7 @@ const AddPost = ({ image }) => {
                   style={{ border: "none" }}
                   className="text-secondary rounded-pill"
                 >
-                  <option value={"public"} selected>
+                  <option value={"public"} defaultValue>
                     Public
                   </option>
                   <option value={"friends"}>Friends</option>
@@ -98,7 +99,7 @@ const AddPost = ({ image }) => {
           </Button>
         </div>
       </Form>
-    </>
+    </div>
   );
 };
 

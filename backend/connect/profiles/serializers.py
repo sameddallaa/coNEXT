@@ -102,10 +102,6 @@ class UserFeedSerializer(serializers.ModelSerializer):
                 PostSerializer(post, context={"request": request}).data
                 for post in friend.posts.all()
             ]
-        if request.data["post_ordering"] == "recent":
-            posts = sorted(posts, key=lambda x: x["posted_at"], reverse=True)
-        elif request.data["post_ordering"] == "top":
-            posts = sorted(posts, key=lambda x: x["likes"], reverse=True)
         return posts
 
     def get_top_friends(self, obj):

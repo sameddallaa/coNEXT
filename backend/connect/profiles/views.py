@@ -60,12 +60,7 @@ class UserFeedView(GenericAPIView):
 
     def get(self, request, *args, **kwargs):
         user = self.get_object()
-        if not request.data.get("post_ordering"):
-            request.data["post_ordering"] = "recent"
-        serializer = self.serializer_class(
-            user,
-            context={"request": request},
-        )
+        serializer = self.serializer_class(user, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     authentication_classes = [JWTAuthentication, authentication.SessionAuthentication]
