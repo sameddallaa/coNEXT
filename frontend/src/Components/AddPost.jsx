@@ -4,23 +4,26 @@ import { Link } from "react-router-dom";
 import { FaAt, FaImage, FaPaperclip } from "react-icons/fa6";
 import FilePlaceholder from "./FilePlaceholder";
 const AddPost = ({ image }) => {
-  const [post, setPost] = useState("");
-  const [file, setFile] = useState("");
+  const [post, setPost] = useState({
+    content: "",
+    image: false,
+    attachment: null,
+  });
   const handleChange = (e) => {
-    setPost(e.target.value);
+    setPost({ ...post, content: e.target.value });
+    console.log(post);
   };
 
   const handleFileChange = (e) => {
     if (e.target.name === "image") {
-      setFile({ image: e.target.files[0] });
-      console.log(e.target.files[0]);
+      setPost({ ...post, attachment: e.target.files[0], image: true });
     } else {
-      setFile({ attachment: e.target.files[0] });
+      setPost({ ...post, attachment: e.target.files[0], image: false });
     }
   };
   return (
     <div className="mb-5">
-      <Form className="p-2 bg-light m-2 rounded">
+      <Form className="p-2 py-3 bg-light m-2 rounded">
         <div className="d-flex">
           <img
             src={image}
@@ -52,7 +55,7 @@ const AddPost = ({ image }) => {
             </InputGroup.Text>
           </InputGroup>
         </div>
-        {file && <FilePlaceholder file={file} setFile={setFile} />}
+        {post.attachment && <FilePlaceholder post={post} setPost={setPost} />}
         <hr />
         <div className="d-flex align-items-center justify-content-evenly my-1">
           <Form.Group>
@@ -91,7 +94,6 @@ const AddPost = ({ image }) => {
               onChange={handleFileChange}
             />
           </Form.Group>
-          {/* <Form.Group> */}
           <Link
             className="d-flex align-items-center text-dark"
             style={{
@@ -107,7 +109,7 @@ const AddPost = ({ image }) => {
           <Button
             variant="success"
             className="rounded-pill"
-            disabled={post === ""}
+            disabled={!(post.content || post.attachment)}
           >
             Post
           </Button>

@@ -1,24 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image } from "react-bootstrap";
 import { FaRegCircleXmark } from "react-icons/fa6";
 import { FaPaperclip } from "react-icons/fa";
 
-const FilePlaceholder = ({ file, setFile }) => {
+const FilePlaceholder = ({ post, setPost }) => {
+  useEffect(() => {
+    console.log("i'm running again");
+  }, [post.attachment]);
+
+  const handleClose = () => {
+    setPost({ ...post, attachment: null, image: false });
+  };
   return (
     <div className="mx-3">
       <div className="d-flex justify-content-end w-25">
-        <span
-          style={{ cursor: "pointer" }}
-          onClick={() => {
-            setFile("");
-          }}
-        >
+        <span style={{ cursor: "pointer" }} onClick={handleClose}>
           <FaRegCircleXmark />
         </span>
       </div>
-      {file.image ? (
+      {post.image ? (
         <Image
-          src={URL.createObjectURL(file.image)}
+          src={URL.createObjectURL(post.attachment)}
           alt="image placeholder"
           className="ms-3 my-2 rounded"
           style={{
@@ -40,7 +42,7 @@ const FilePlaceholder = ({ file, setFile }) => {
             className="d-flex justify-content-center align-items-center py-2 rounded-bottom"
             style={{ wordWrap: "break-word", backgroundColor: "#bbc4d4" }}
           >
-            {file.attachment.name}
+            {post.attachment.name}
           </div>
         </div>
       )}

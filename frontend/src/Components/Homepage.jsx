@@ -15,7 +15,6 @@ const Homepage = () => {
   const { user } = useContext(AuthContext);
   const [feed, setFeed] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [postOrdering, setPostOrdering] = useState({ post_ordering: "recent" });
   useEffect(() => {
     async function fetchFeed() {
       try {
@@ -25,7 +24,6 @@ const Homepage = () => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token.access}`,
           },
-          params: { post_ordering: postOrdering },
         });
         if (response.status === 200) {
           const data = response.data;
@@ -42,7 +40,7 @@ const Homepage = () => {
       }
     }
     fetchFeed();
-  }, [user.user_id, token.access, postOrdering]);
+  }, [user.user_id, token.access]);
 
   return (
     <div className="" style={{ backgroundColor: "#a0a0a0" }}>
@@ -70,7 +68,6 @@ const Homepage = () => {
           "nothing yet"
         )}
       </Row>
-      {/* <Messages /> */}
     </div>
   );
 };

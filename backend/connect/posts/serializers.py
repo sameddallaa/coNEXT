@@ -42,6 +42,12 @@ class PostSerializer(serializers.ModelSerializer):
         ]
 
 
+class NewPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Post
+        fields = ["owner", "content", "attachment", "privacy"]
+
+
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
