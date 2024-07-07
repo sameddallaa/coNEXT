@@ -9,6 +9,7 @@ import axios from "axios";
 import Lottie from "lottie-react";
 import loadingAnimation from "../assets/animations/loadingAnimation.json";
 import LeftSidebar from "./LeftSidebar";
+import Messages from "./Messages";
 const Homepage = () => {
   const token = JSON.parse(localStorage.getItem("tokens"));
   const { user } = useContext(AuthContext);
@@ -69,6 +70,7 @@ const Homepage = () => {
           "nothing yet"
         )}
       </Row>
+      {/* <Messages /> */}
     </div>
   );
 };

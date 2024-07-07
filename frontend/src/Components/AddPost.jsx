@@ -1,12 +1,22 @@
 import React, { useState, useRef } from "react";
-import pfp from "../assets/img/pfp.jpg";
-import { Form, Modal, Button, InputGroup } from "react-bootstrap";
+import { Form, Button, InputGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { FaAt, FaImage, FaPaperclip, FaVideo } from "react-icons/fa6";
+import { FaAt, FaImage, FaPaperclip } from "react-icons/fa6";
+import FilePlaceholder from "./FilePlaceholder";
 const AddPost = ({ image }) => {
   const [post, setPost] = useState("");
+  const [file, setFile] = useState("");
   const handleChange = (e) => {
     setPost(e.target.value);
+  };
+
+  const handleFileChange = (e) => {
+    if (e.target.name === "image") {
+      setFile({ image: e.target.files[0] });
+      console.log(e.target.files[0]);
+    } else {
+      setFile({ attachment: e.target.files[0] });
+    }
   };
   return (
     <div className="mb-5">
@@ -42,6 +52,7 @@ const AddPost = ({ image }) => {
             </InputGroup.Text>
           </InputGroup>
         </div>
+        {file && <FilePlaceholder file={file} setFile={setFile} />}
         <hr />
         <div className="d-flex align-items-center justify-content-evenly my-1">
           <Form.Group>
@@ -53,29 +64,32 @@ const AddPost = ({ image }) => {
               <FaImage className="text-success m-1" />
               Image
             </Form.Label>
-            <Form.Control type="file" className="d-none" id="imageInput" />
+            <Form.Control
+              type="file"
+              className="d-none"
+              id="imageInput"
+              name="image"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
           </Form.Group>
           <Form.Group>
             <Form.Label
-              htmlFor="videoInput"
-              className="d-flex align-items-center m-0"
-              style={{ cursor: "pointer", fontWeight: "500" }}
-            >
-              <FaVideo className="text-success m-1" />
-              Video
-            </Form.Label>
-            <Form.Control type="file" className="d-none" id="imageInput" />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label
-              htmlFor="fileInput"
+              htmlFor="attachmentInput"
               className="d-flex align-items-center m-0"
               style={{ cursor: "pointer", fontWeight: "500" }}
             >
               <FaPaperclip className="text-success m-1" />
               Attachment
             </Form.Label>
-            <Form.Control type="file" className="d-none" id="imageInput" />
+            <Form.Control
+              type="file"
+              className="d-none"
+              id="attachmentInput"
+              name="attachment"
+              accept=".pdf, .txt, .doc, video/*"
+              onChange={handleFileChange}
+            />
           </Form.Group>
           {/* <Form.Group> */}
           <Link
