@@ -1,9 +1,13 @@
-import React, { useState, createContext, useRef } from "react";
+import React, { useState, createContext, useRef, useContext } from "react";
 import { Form, Button, InputGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FaAt, FaImage, FaPaperclip } from "react-icons/fa6";
 import FilePlaceholder from "./FilePlaceholder";
+import AuthContext from "../Contexts/AuthContext";
+import axios from "axios";
 const AddPost = ({ image }) => {
+  const tokens = JSON.parse(localStorage.getItem("tokens"));
+  const { user } = useContext(AuthContext);
   const [post, setPost] = useState({
     content: "",
     image: false,
@@ -23,12 +27,47 @@ const AddPost = ({ image }) => {
     } else if (e.target.name === "privacy") {
       setPost({ ...post, privacy: e.target.value });
     }
-    console.log(post);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const POST_ENDPOINT = "http://localhost:8000/api/posts/new";
+    const formData = {
+      content: post.content,
+      privacy: post.privacy,
+      attachment: post.attachment,
+      owner: user.user_id,
+    };
+
+    try {
+      const response = await axios.post(POST_ENDPOINT, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${tokens.access}`,
+        },
+      });
+      if (response.status === 201) {
+        setPost({
+          content: "",
+          image: false,
+          attachment: null,
+          privacy: "friends",
+        });
+        imageRef.current.value = "";
+        attachmentRef.current.value = "";
+      } else {
+        console.log("Error creating post");
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      console.log(formData);
+    }
   };
 
   return (
     <div className="mb-5">
-      <Form className="p-2 py-3 bg-light m-2 rounded">
+      <Form className="p-2 py-3 bg-light m-2 rounded" onSubmit={handleSubmit}>
         <div className="d-flex">
           <img
             src={image}
@@ -123,6 +162,7 @@ const AddPost = ({ image }) => {
           </Link>
 
           <Button
+            type="submit"
             variant="success"
             className="rounded-pill"
             disabled={!(post.content || post.attachment)}

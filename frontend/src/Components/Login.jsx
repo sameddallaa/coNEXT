@@ -54,7 +54,7 @@ const Login = () => {
                   Provide your login credentials to proceed.
                 </p>
               </div>
-              <Form>
+              <Form onSubmit={handleSubmit}>
                 <Form.Label htmlFor="email">Email</Form.Label>
                 <Form.Control
                   type="email"
@@ -97,6 +97,7 @@ const Login = () => {
                       </a>
                     </div>
                     <Button
+                      type="submit"
                       variant="primary"
                       className="btn-success rounded-pill w-25 mt-2"
                       onClick={handleSubmit}
