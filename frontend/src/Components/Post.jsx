@@ -8,7 +8,6 @@ import { FaRegHeart, FaRegComment } from "react-icons/fa";
 import { FiSend } from "react-icons/fi";
 
 const Post = ({ image, post }) => {
-  // owner, content, posted_at, attachment, likes, comment_count, comments
   const { timeAgo, getFileType } = useContext(UtilsContext);
   const [show, setShow] = useState(false);
   const [fileUrl, setFileUrl] = useState("");
