@@ -8,6 +8,7 @@ const AddPost = ({ image }) => {
     content: "",
     image: false,
     attachment: null,
+    privacy: "friends",
   });
 
   const imageRef = useRef(null);
@@ -19,6 +20,8 @@ const AddPost = ({ image }) => {
       setPost({ ...post, attachment: e.target.files[0], image: true });
     } else if (e.target.name === "attachment") {
       setPost({ ...post, attachment: e.target.files[0], image: false });
+    } else if (e.target.name === "privacy") {
+      setPost({ ...post, privacy: e.target.value });
     }
     console.log(post);
   };
@@ -46,11 +49,13 @@ const AddPost = ({ image }) => {
                 <Form.Select
                   style={{ border: "none" }}
                   className="text-secondary rounded-pill"
+                  name="privacy"
+                  onChange={handleChange}
                 >
-                  <option value={"public"} defaultValue>
-                    Public
+                  <option value={"public"}>Public</option>
+                  <option value={"friends"} defaultValue>
+                    Friends
                   </option>
-                  <option value={"friends"}>Friends</option>
                   <option value={"me"}>Only me</option>
                 </Form.Select>
               </Form.Group>
