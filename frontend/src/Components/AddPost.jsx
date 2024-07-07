@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, createContext, useRef } from "react";
 import { Form, Button, InputGroup } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { FaAt, FaImage, FaPaperclip } from "react-icons/fa6";
@@ -9,18 +9,20 @@ const AddPost = ({ image }) => {
     image: false,
     attachment: null,
   });
+
+  const imageRef = useRef(null);
+  const attachmentRef = useRef(null);
   const handleChange = (e) => {
-    setPost({ ...post, content: e.target.value });
+    if (e.target.name === "content") {
+      setPost({ ...post, content: e.target.value });
+    } else if (e.target.name === "image") {
+      setPost({ ...post, attachment: e.target.files[0], image: true });
+    } else if (e.target.name === "attachment") {
+      setPost({ ...post, attachment: e.target.files[0], image: false });
+    }
     console.log(post);
   };
 
-  const handleFileChange = (e) => {
-    if (e.target.name === "image") {
-      setPost({ ...post, attachment: e.target.files[0], image: true });
-    } else {
-      setPost({ ...post, attachment: e.target.files[0], image: false });
-    }
-  };
   return (
     <div className="mb-5">
       <Form className="p-2 py-3 bg-light m-2 rounded">
@@ -36,7 +38,7 @@ const AddPost = ({ image }) => {
               type="text"
               className="rounded-pill"
               placeholder="What's on your mind?"
-              name="postBody"
+              name="content"
               onChange={handleChange}
             />
             <InputGroup.Text style={{ border: "none" }}>
@@ -55,7 +57,14 @@ const AddPost = ({ image }) => {
             </InputGroup.Text>
           </InputGroup>
         </div>
-        {post.attachment && <FilePlaceholder post={post} setPost={setPost} />}
+        {post.attachment && (
+          <FilePlaceholder
+            post={post}
+            setPost={setPost}
+            imageRef={imageRef}
+            attachmentRef={attachmentRef}
+          />
+        )}
         <hr />
         <div className="d-flex align-items-center justify-content-evenly my-1">
           <Form.Group>
@@ -73,7 +82,8 @@ const AddPost = ({ image }) => {
               id="imageInput"
               name="image"
               accept="image/*"
-              onChange={handleFileChange}
+              onChange={handleChange}
+              ref={imageRef}
             />
           </Form.Group>
           <Form.Group>
@@ -91,7 +101,8 @@ const AddPost = ({ image }) => {
               id="attachmentInput"
               name="attachment"
               accept=".pdf, .txt, .doc, video/*"
-              onChange={handleFileChange}
+              onChange={handleChange}
+              ref={attachmentRef}
             />
           </Form.Group>
           <Link

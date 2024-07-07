@@ -3,14 +3,16 @@ import { Image } from "react-bootstrap";
 import { FaRegCircleXmark } from "react-icons/fa6";
 import { FaPaperclip } from "react-icons/fa";
 
-const FilePlaceholder = ({ post, setPost }) => {
-  useEffect(() => {
-    console.log("i'm running again");
-  }, [post.attachment]);
-
+const FilePlaceholder = ({ post, setPost, imageRef, attachmentRef }) => {
   const handleClose = () => {
     setPost({ ...post, attachment: null, image: false });
+    if (post.image) {
+      imageRef.current.value = null;
+    } else {
+      attachmentRef.current.value = null;
+    }
   };
+  if (!post.attachment) return null;
   return (
     <div className="mx-3">
       <div className="d-flex justify-content-end w-25">
