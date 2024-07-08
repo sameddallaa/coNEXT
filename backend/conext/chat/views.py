@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Chat, Message
-from django.db.models import Count
+from django.db.models import Count, Q
 from .serializers import (
     ChatSerializer,
     MessageSerializer,
@@ -64,26 +64,6 @@ class ChatDetailView(GenericAPIView):
             {"error": "Chat id not provided"}, status=status.HTTP_400_BAD_REQUEST
         )
 
-    # def post(self, request, *args, **kwargs):
-    #     pk = kwargs.get("pk", None)
-    #     if pk:
-    #         chat = Chat.objects.filter(pk=pk).first()
-    #         if chat:
-    #             self.check_object_permissions(request, chat)
-    #             data = request.data
-    #             data["chat"] = chat.pk
-    #             serializer = MessageSerializer(data=data)
-    #             if serializer.is_valid():
-    #                 serializer.save()
-    #                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    #         return Response(
-    #             {"error": "Chat not found"}, status=status.HTTP_404_NOT_FOUND
-    #         )
-    #     return Response(
-    #         {"error": "Chat id not provided"}, status=status.HTTP_400_BAD_REQUEST
-    #     )
-
 
 class NewMessageView(GenericAPIView):
     queryset = Message.objects.all()
@@ -94,29 +74,41 @@ class NewMessageView(GenericAPIView):
         JWTAuthentication,
     ]
 
-    def post(self, request, *args, **kwargs):
-        sender = request.user.pk
+    def get(self, request, *args, **kwargs):
         receiver = kwargs.get("receiver")
         if not User.objects.filter(pk=receiver).exists():
             raise ValidationError("Receiver does not exist")
-        chats_with_sender = Chat.objects.filter(participants=sender)
+        receiver = User.objects.get(pk=receiver)
+        return Response(
+            {"data": f"send message to {receiver}"}, status=status.HTTP_200_OK
+        )
+
+    def post(self, request, *args, **kwargs):
+        sender = request.user
+        receiver = kwargs.get("receiver")
+        if not User.objects.filter(pk=receiver).exists():
+            raise ValidationError("Receiver does not exist")
+        receiver = User.objects.get(pk=receiver)
         chat = (
-            chats_with_sender.filter(participants=receiver)
-            .annotate(num_participants=Count("participants"))
-            .filter(num_participants=2)
+            Chat.objects.filter(participants=sender)
+            .filter(participants=receiver)
             .first()
         )
+
+        print(f"chat is {chat}")
         if not chat:
             chat = Chat.objects.create()
             chat.participants.add(sender, receiver)
         print(request.data)
         data = request.data.copy()
         data["chat"] = chat.pk
-        data["sender"] = sender
-        data["receiver"] = receiver
+        data["sender"] = sender.pk
+        data["receiver"] = receiver.pk
         print(data)
         serializer = NewMessageSerializer(data=data)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(
+                {"success": "message has been sent"}, status=status.HTTP_201_CREATED
+            )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
