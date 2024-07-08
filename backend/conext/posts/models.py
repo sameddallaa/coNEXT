@@ -16,9 +16,7 @@ class Post(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
     content = models.TextField(blank=True)
     posted_at = models.DateTimeField(auto_now_add=True)
-    likes = models.ManyToManyField(
-        User, blank=True, null=True, related_name="liked_posts"
-    )
+    likes = models.ManyToManyField(User, blank=True, related_name="liked_posts")
     attachment = models.FileField(upload_to="post_attachments/", null=True, blank=True)
     privacy = models.CharField(
         max_length=255, choices=PRIVACY_CHOICES, default="friends"
