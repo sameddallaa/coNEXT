@@ -23,12 +23,20 @@ class MessageSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class NewMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = "__all__"
+
+
 class ChatDetailSerializer(serializers.ModelSerializer):
     messages = serializers.SerializerMethodField()
     participants = UserSerializer(many=True)
 
     def get_messages(self, obj):
-        return MessageSerializer(obj.messages.all(), many=True).data
+        return MessageSerializer(
+            obj.messages.all().order_by("-sent_at"), many=True
+        ).data
 
     class Meta:
         model = Chat

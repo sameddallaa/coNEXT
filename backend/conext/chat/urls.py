@@ -9,4 +9,9 @@ urlpatterns = [
     path(
         "<int:pk>/messages", view=views.ChatDetailView.as_view(), name="ChatDetailView"
     ),
+    path(
+        "users/<int:receiver>/send",
+        view=views.NewMessageView.as_view(),
+        name="NewMessageView",
+    ),
 ]
