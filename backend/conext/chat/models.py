@@ -8,10 +8,14 @@ from django.core.exceptions import ValidationError
 
 class Chat(models.Model):
     participants = models.ManyToManyField(User, related_name="chats")
-
     def __str__(self):
         return f"Chat between {", ".join([str(participant) for participant in self.participants.all()])}"
 
+STATUS = (
+    ('sent', 'sent'),
+    ('delivered', 'delivered'),
+    ('read', 'read')
+)
 
 class Message(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE, related_name="messages")
@@ -26,6 +30,7 @@ class Message(models.Model):
     attachment = models.FileField(
         upload_to="message_attachments/", null=True, blank=True
     )
+    status = models.CharField(max_length=255, choices=STATUS, default="sent")
     sent_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
