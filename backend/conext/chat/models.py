@@ -46,6 +46,7 @@ class Message(models.Model):
                 "Sender and receiver must be participants in the chat"
             )
         super().save(*args, **kwargs)
+        
 
     def __str__(self):
         return f"Message from {self.sender} to {self.receiver}"
