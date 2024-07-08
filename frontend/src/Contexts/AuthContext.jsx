@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
         navigate("/");
         console.log(user);
       } else {
-        throw new Error();
+        console.log(data);
       }
     } catch (error) {
       console.log(error);
