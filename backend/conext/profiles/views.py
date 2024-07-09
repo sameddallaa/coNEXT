@@ -69,5 +69,5 @@ class UserChatsView(GenericAPIView):
         if not User.objects.filter(pk=user).exists():
             raise ValueError("User does not exist")
         user = User.objects.get(pk=user)
-        serializer = UserChatsSerializer(user)
+        serializer = UserChatsSerializer(user, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)

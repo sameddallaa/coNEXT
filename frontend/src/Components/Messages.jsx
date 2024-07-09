@@ -63,7 +63,7 @@ const Messages = () => {
               <div
                 key={index}
                 className=""
-                style={{ backgroundColor: "#bfe4ff" }}
+                style={{ backgroundColor: "#bdffed" }}
               >
                 <div className="d-flex flex-column py-1 px-2">
                   <Link

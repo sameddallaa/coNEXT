@@ -123,6 +123,7 @@ class UserFeedSerializer(serializers.ModelSerializer):
 
 
 class UserChatsSerializer(serializers.ModelSerializer):
+    profile_image = serializers.SerializerMethodField()
     chats = serializers.SerializerMethodField()
 
     def get_chats(self, obj):
@@ -130,6 +131,12 @@ class UserChatsSerializer(serializers.ModelSerializer):
 
         return ChatSerializer(obj.chats.all(), many=True).data
 
+    def get_profile_image(self, obj):
+        request = self.context.get("request")
+        if obj.profile_image and request is not None:
+            return request.build_absolute_uri(obj.profile_image.url)
+        return None
+
     class Meta:
         model = User
-        fields = ["id", "email", "username", "chats"]
+        fields = ["id", "email", "username", "profile_image", "chats"]
