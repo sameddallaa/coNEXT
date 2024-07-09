@@ -11,8 +11,7 @@ from rest_framework.generics import ListAPIView, GenericAPIView
 from rest_framework.permissions import IsAdminUser
 from rest_framework.authentication import SessionAuthentication
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.views import APIView, Response, status
-from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.views import Response, status
 from .permissions import IsParticipant, IsSenderOrReceiver
 from profiles.models import User
 from django.core.exceptions import ValidationError

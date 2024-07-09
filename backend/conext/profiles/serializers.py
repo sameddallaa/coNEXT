@@ -1,12 +1,9 @@
-from django.db.models import F, Count
-from django.db.models.functions import Coalesce
 from rest_framework import serializers
 from .models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import ValidationError
 from datetime import date
 from django.contrib.auth.password_validation import validate_password
-from posts.models import Post, Comment
 from posts.serializers import PostSerializer
 
 
@@ -117,3 +114,16 @@ class UserFeedSerializer(serializers.ModelSerializer):
             "top_friends",
             "posts",
         ]
+
+
+class UserChatsSerializer(serializers.ModelSerializer):
+    chats = serializers.SerializerMethodField()
+
+    def get_chats(self, obj):
+        from chat.serializers import ChatSerializer
+
+        return ChatSerializer(obj.chats.all(), many=True).data
+
+    class Meta:
+        model = User
+        fields = ["id", "email", "username", "chats"]

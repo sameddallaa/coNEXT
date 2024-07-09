@@ -1,17 +1,12 @@
 from django.shortcuts import render
-from rest_framework.generics import (
-    ListAPIView,
-    RetrieveAPIView,
-    CreateAPIView,
-    DestroyAPIView,
-    UpdateAPIView,
-)
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from .models import User
 from .serializers import (
     UserSerializer,
     MyTokenObtainPairSerializer,
     SignupSerializer,
     UserFeedSerializer,
+    UserChatsSerializer,
 )
 from .permissions import IsOwnerOrAdmin
 from rest_framework.views import APIView, Response, status
@@ -19,8 +14,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import GenericAPIView
 from rest_framework import permissions, authentication
-
-# Create your views here.
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -65,3 +58,16 @@ class UserFeedView(GenericAPIView):
 
     authentication_classes = [JWTAuthentication, authentication.SessionAuthentication]
     permission_classes = [IsOwnerOrAdmin]
+
+
+class UserChatsView(GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserChatsSerializer
+
+    def get(self, request, *args, **kwargs):
+        user = kwargs.get("pk")
+        if not User.objects.filter(pk=user).exists():
+            raise ValueError("User does not exist")
+        user = User.objects.get(pk=user)
+        serializer = UserChatsSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)

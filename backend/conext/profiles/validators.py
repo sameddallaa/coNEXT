@@ -1,4 +1,3 @@
-from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from datetime import date
 import re

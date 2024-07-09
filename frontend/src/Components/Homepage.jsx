@@ -68,6 +68,7 @@ const Homepage = () => {
           "nothing yet"
         )}
       </Row>
+      <Messages />
     </div>
   );
 };
