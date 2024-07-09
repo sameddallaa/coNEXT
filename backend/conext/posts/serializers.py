@@ -8,7 +8,7 @@ class PostSerializer(serializers.ModelSerializer):
     comment_count = serializers.SerializerMethodField()
     attachment = serializers.SerializerMethodField()
     like_count = serializers.SerializerMethodField()
-    profile_image = serializers.SerializerMethodField(source="owner.profile_image")
+    profile_image = serializers.FileField(source="owner.profile_image")
 
     def get_comments(self, obj):
         return CommentSerializer(obj.post_comments.all(), many=True).data

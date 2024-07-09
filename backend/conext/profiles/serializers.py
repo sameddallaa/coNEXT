@@ -5,6 +5,7 @@ from rest_framework.exceptions import ValidationError
 from datetime import date
 from django.contrib.auth.password_validation import validate_password
 from posts.serializers import PostSerializer
+import os
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -21,9 +22,19 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     full_name = serializers.SerializerMethodField()
+    # profile_image = serializers.SerializerMethodField()
 
     def get_full_name(self, obj):
         return obj.full_name
+
+    def get_profile_image(self, obj):
+        return obj.profile_image.url
+
+    # def to_representation(self, instance):
+    #     representation = super().to_representation(instance)
+    #     if representation["profile_image"]:
+    #         representation["profile_image"] = representation["profile_image"].url
+    #     return representation
 
     class Meta:
         model = User
@@ -129,7 +140,7 @@ class UserChatsSerializer(serializers.ModelSerializer):
     def get_chats(self, obj):
         from chat.serializers import ChatSerializer
 
-        return ChatSerializer(obj.chats.all(), many=True).data
+        return ChatSerializer(obj.chats.all(), context=self.context, many=True).data
 
     def get_profile_image(self, obj):
         request = self.context.get("request")

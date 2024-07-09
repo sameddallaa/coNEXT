@@ -8,7 +8,9 @@ class ChatSerializer(serializers.ModelSerializer):
     last_message = serializers.SerializerMethodField()
 
     def get_participants(self, obj):
-        return UserSerializer(obj.participants.all(), many=True).data
+        return UserSerializer(
+            obj.participants.all(), context=self.context, many=True
+        ).data
 
     def get_last_message(self, obj):
         last_message = obj.messages.all().order_by("-sent_at").first()
