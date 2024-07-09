@@ -20,12 +20,18 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField()
+
+    def get_full_name(self, obj):
+        return obj.full_name
+
     class Meta:
         model = User
         fields = (
             "id",
             "username",
             "email",
+            "full_name",
             "first_name",
             "last_name",
             "bio",
