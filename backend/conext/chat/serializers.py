@@ -5,9 +5,14 @@ from profiles.serializers import UserSerializer
 
 class ChatSerializer(serializers.ModelSerializer):
     participants = serializers.SerializerMethodField()
+    last_message = serializers.SerializerMethodField()
 
     def get_participants(self, obj):
         return UserSerializer(obj.participants.all(), many=True).data
+
+    def get_last_message(self, obj):
+        last_message = obj.messages.all().order_by("sent_at").first()
+        return MessageSerializer(last_message).data
 
     class Meta:
         model = Chat
