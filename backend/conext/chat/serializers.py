@@ -6,6 +6,7 @@ from profiles.serializers import UserSerializer
 class ChatSerializer(serializers.ModelSerializer):
     participants = serializers.SerializerMethodField()
     last_message = serializers.SerializerMethodField()
+    unread_messages = serializers.SerializerMethodField()
 
     def get_participants(self, obj):
         return UserSerializer(
@@ -15,6 +16,10 @@ class ChatSerializer(serializers.ModelSerializer):
     def get_last_message(self, obj):
         last_message = obj.messages.all().order_by("-sent_at").first()
         return MessageSerializer(last_message).data
+
+    def get_unread_messages(self, obj):
+        unread_messages = obj.messages.exclude(status="read").count()
+        return unread_messages
 
     class Meta:
         model = Chat

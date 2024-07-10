@@ -36,7 +36,7 @@ const ChatsSidebar = () => {
   return (
     <>
       <div className="vh-100 bg-light">
-        <div className="d-flex align-items-center justify-content-between px-2 py-2">
+        <div className="d-flex align-items-center justify-content-between ps-3 pe-2 py-2">
           <h4>Chats</h4>
           <div className="d-flex align-items-center me-2">
             <Button
@@ -56,65 +56,80 @@ const ChatsSidebar = () => {
         {chats.map((chat, index) => (
           <>
             <hr className="m-0" />
-            <div key={index} className="py-1">
-              <div className="py-2 d-flex">
-                <Image
-                  src={
-                    chat.participants.filter(
-                      (participant) => participant.id !== user.user_id
-                    )[0].profile_image
-                  }
-                  roundedCircle
-                  width={50}
-                  height={50}
-                  className="mx-2"
-                />
-                <div className="d-flex flex-column justify-content-center">
-                  <Link className="text-decoration-none text-dark ">
-                    {
+            <Link key={index} className="text-decoration-none">
+              <div className="py-1">
+                <div className="py-2 d-flex">
+                  <Image
+                    src={
                       chat.participants.filter(
                         (participant) => participant.id !== user.user_id
-                      )[0].full_name
+                      )[0].profile_image
                     }
-                  </Link>
-                  {chat.last_message.sender.id && (
-                    <p
-                      className={`m-0 ps-1 small ${
-                        chat.last_message.sender.id !== user.user_id &&
-                        chat.last_message.status !== "read"
-                          ? "text-dark"
-                          : "text-secondary"
-                      }`}
-                      style={{
-                        fontWeight:
-                          chat.last_message.sender.id !== user.user_id &&
-                          chat.last_message.status !== "read"
-                            ? 700
-                            : 400,
-                      }}
-                    >
-                      {chat.last_message.body
-                        ? chat.last_message.sender.id === user.user_id
-                          ? `You: ${
-                              chat.last_message.body.length > 20
-                                ? chat.last_message.body.slice(0, 20) + "..."
-                                : chat.last_message.body
-                            }`
-                          : chat.last_message.body.length > 20
-                          ? chat.last_message.body.slice(0, 20) + "..."
-                          : chat.last_message.body
-                        : chat.last_message.attachment
-                        ? chat.last_message.sender.id === user.user_id
-                          ? "You: Attachment"
-                          : "Attachment"
-                        : chat.last_message.sender.id === user.user_id
-                        ? "You: Post"
-                        : "Post"}
-                    </p>
-                  )}
+                    roundedCircle
+                    width={50}
+                    height={50}
+                    className="mx-2"
+                  />
+                  <div className="d-flex justify-content-between align-items-center w-100 mx-2">
+                    <div className="d-flex flex-column justify-content-center">
+                      <Link className="text-decoration-none text-dark ">
+                        {
+                          chat.participants.filter(
+                            (participant) => participant.id !== user.user_id
+                          )[0].full_name
+                        }
+                      </Link>
+                      {chat.last_message.sender.id && (
+                        <p
+                          className={`m-0 ps-1 small ${
+                            chat.last_message.sender.id !== user.user_id &&
+                            chat.last_message.status !== "read"
+                              ? "text-dark"
+                              : "text-secondary"
+                          }`}
+                          style={{
+                            fontWeight:
+                              chat.last_message.sender.id !== user.user_id &&
+                              chat.last_message.status !== "read"
+                                ? 700
+                                : 400,
+                          }}
+                        >
+                          {chat.last_message.body
+                            ? chat.last_message.sender.id === user.user_id
+                              ? `You: ${
+                                  chat.last_message.body.length > 20
+                                    ? chat.last_message.body.slice(0, 20) +
+                                      "..."
+                                    : chat.last_message.body
+                                }`
+                              : chat.last_message.body.length > 20
+                              ? chat.last_message.body.slice(0, 20) + "..."
+                              : chat.last_message.body
+                            : chat.last_message.attachment
+                            ? chat.last_message.sender.id === user.user_id
+                              ? "You: Attachment"
+                              : "Attachment"
+                            : chat.last_message.sender.id === user.user_id
+                            ? "You: Post"
+                            : "Post"}
+                        </p>
+                      )}
+                    </div>
+                    {chat.unread_messages > 0 && (
+                      <p
+                        className="rounded-circle bg-danger d-flex align-items-center justify-content-center text-light"
+                        style={{ width: "30px", height: "30px" }}
+                      >
+                        {chat.unread_messages >= 100
+                          ? "99+"
+                          : chat.unread_messages}
+                      </p>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
+            </Link>
             <hr className="m-0" />
           </>
         ))}
