@@ -9,6 +9,7 @@ import { UtilsProvider } from "./Contexts/UtilsContext.jsx";
 import LoggedOutRoute from "./Routes/LoggedOutRoute.jsx";
 import ProtectedRoute from "./Routes/ProtectedRoute.jsx";
 import Homepage from "./Components/Homepage.jsx";
+import Chats from "./Components/Chats.jsx";
 function App() {
   console.log();
   return (
@@ -18,6 +19,7 @@ function App() {
           <Routes>
             <Route element={<ProtectedRoute />}>
               <Route path="/" exact element={<Homepage />} />
+              <Route path="/chats" element={<Chats />} />
             </Route>
             <Route element={<LoggedOutRoute />}>
               <Route path="/signup" element={<Signup />} />

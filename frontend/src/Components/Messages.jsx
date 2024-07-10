@@ -87,7 +87,7 @@ const Messages = () => {
                     </div>
                     <div className="d-flex flex-column py-2 px-2">
                       <Link
-                        className="text-decoration-none text-dark"
+                        className="text-decoration-none text-dark small"
                         style={{
                           fontWeight: 500,
                         }}
@@ -98,7 +98,7 @@ const Messages = () => {
                           )[0].full_name
                         }
                       </Link>
-                      {chat.last_message && (
+                      {chat.last_message.sender.id && (
                         <p
                           className={`m-0 ps-1 small ${
                             chat.last_message.sender.id !== user.user_id &&
@@ -116,7 +116,14 @@ const Messages = () => {
                         >
                           {chat.last_message.body
                             ? chat.last_message.sender.id === user.user_id
-                              ? `You: ${chat.last_message.body}`
+                              ? `You: ${
+                                  chat.last_message.body.length > 20
+                                    ? chat.last_message.body.slice(0, 20) +
+                                      "..."
+                                    : chat.last_message.body
+                                }`
+                              : chat.last_message.body.length > 20
+                              ? chat.last_message.body.slice(0, 20) + "..."
                               : chat.last_message.body
                             : chat.last_message.attachment
                             ? chat.last_message.sender.id === user.user_id

@@ -3,15 +3,16 @@ import { Link } from "react-router-dom";
 import { Image } from "react-bootstrap";
 const LeftSidebar = ({ owner }) => {
   return (
-    <>
-      <div className="d-flex flex-column bg-light rounded p-2 m-2">
+    <div className="py-2 position-fixed top-25 start-0 w-25">
+      <div className="d-flex flex-column bg-light rounded p-2 mx-2">
         <div className="d-flex align-items-center">
           <Image
             src={owner.profile_image}
             alt="profile picture"
             roundedCircle
             className="me-1"
-            style={{ width: "50px", height: "auto" }}
+            width={50}
+            height={50}
           />
           <div className="d-flex flex-column">
             <Link
@@ -64,7 +65,7 @@ const LeftSidebar = ({ owner }) => {
         </div>
         <p className="ms-3 my-0 text-secondary">CoNEXT © 2024</p>
       </div>
-    </>
+    </div>
   );
 };
 

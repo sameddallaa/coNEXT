@@ -8,6 +8,7 @@ from django.core.exceptions import ValidationError
 
 class Chat(models.Model):
     participants = models.ManyToManyField(User, related_name="chats")
+    
     def __str__(self):
         return f"Chat between {", ".join([str(participant) for participant in self.participants.all()])}"
 

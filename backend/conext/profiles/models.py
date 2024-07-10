@@ -82,7 +82,7 @@ class User(AbstractUser):
     profile_image = models.ImageField(
         "Profile picture",
         upload_to="profiles_pics/",
-        default="profile_pics/Default_pfp.svg",
+        default="profile_pics/Default_pfp.svg.png",
     )
 
     USERNAME_FIELD = "email"

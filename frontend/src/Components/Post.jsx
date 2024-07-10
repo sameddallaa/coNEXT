@@ -31,10 +31,12 @@ const Post = ({ image, post }) => {
       <div className="bg-light p-2 m-2 rounded">
         <div className="d-flex justify-content-between m-2">
           <div className="d-flex align-items-center">
-            <img
+            <Image
               src={image}
-              alt=""
-              style={{ width: "40px", height: "auto", borderRadius: "5000px" }}
+              alt="Profile picture"
+              roundedCircle
+              width={40}
+              height={40}
             />
             <div className="d-flex flex-column justify-content-center mx-2">
               <div>
