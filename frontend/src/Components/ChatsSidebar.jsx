@@ -85,7 +85,7 @@ const ChatsSidebar = ({ setChat }) => {
                           )[0].full_name
                         }
                       </span>
-                      {chat.last_message.sender.id && (
+                      {chat.last_message.sender && (
                         <p
                           className={`m-0 ps-1 small ${
                             chat.last_message.sender.id !== user.user_id &&

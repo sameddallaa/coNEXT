@@ -8,7 +8,7 @@ import { FaRegHeart, FaRegComment } from "react-icons/fa";
 import { FiSend } from "react-icons/fi";
 
 const Post = ({ image, post }) => {
-  const { timeAgo, getFileType } = useContext(UtilsContext);
+  const { timeAgo } = useContext(UtilsContext);
   const [show, setShow] = useState(false);
   const [fileUrl, setFileUrl] = useState("");
   console.log(post.attachment);

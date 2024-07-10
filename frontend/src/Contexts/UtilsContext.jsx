@@ -53,22 +53,23 @@ export const UtilsProvider = ({ children }) => {
     }
     return `just now`;
   };
+  const imageMimeTypes = [
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+    "image/bmp",
+    "image/svg+xml",
+  ];
 
-  const [fileType, setFileType] = useState("");
-  const getFileType = (file) => {
-    const type = file.type;
-    if (type.startsWith("image/")) {
-      return "image";
-    } else if (type.startsWith("video/")) {
-      return "video";
-    } else {
-      return "other";
-    }
+  const isImage = (file) => {
+    const pattern = /\.(jpg|jpeg|png|gif|svg)$/i;
+    return pattern.test(file);
   };
 
   const contextData = {
     timeAgo: timeAgo,
-    getFileType: getFileType,
+    isImage: isImage,
   };
   return (
     <UtilsContext.Provider value={contextData}>

@@ -27,8 +27,14 @@ class ChatSerializer(serializers.ModelSerializer):
 
 
 class MessageSerializer(serializers.ModelSerializer):
-    sender = UserSerializer()
-    receiver = UserSerializer()
+    sender = serializers.SerializerMethodField()
+    receiver = serializers.SerializerMethodField()
+
+    def get_sender(self, obj):
+        return UserSerializer(obj.sender, context=self.context).data
+
+    def get_receiver(self, obj):
+        return UserSerializer(obj.receiver, context=self.context).data
 
     class Meta:
         model = Message
@@ -47,7 +53,7 @@ class ChatDetailSerializer(serializers.ModelSerializer):
 
     def get_messages(self, obj):
         return MessageSerializer(
-            obj.messages.all().order_by("-sent_at"), many=True
+            obj.messages.all().order_by("-sent_at"), many=True, context=self.context
         ).data
 
     def get_participants(self, obj):
