@@ -43,11 +43,16 @@ class NewMessageSerializer(serializers.ModelSerializer):
 
 class ChatDetailSerializer(serializers.ModelSerializer):
     messages = serializers.SerializerMethodField()
-    participants = UserSerializer(many=True)
+    participants = serializers.SerializerMethodField()
 
     def get_messages(self, obj):
         return MessageSerializer(
             obj.messages.all().order_by("-sent_at"), many=True
+        ).data
+
+    def get_participants(self, obj):
+        return UserSerializer(
+            obj.participants.all(), many=True, context=self.context
         ).data
 
     class Meta:

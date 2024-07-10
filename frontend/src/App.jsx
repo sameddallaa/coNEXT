@@ -19,7 +19,7 @@ function App() {
           <Routes>
             <Route element={<ProtectedRoute />}>
               <Route path="/" exact element={<Homepage />} />
-              <Route path="/chats" element={<Chats />} />
+              <Route path="/chats/:chatId?" element={<Chats />} />
             </Route>
             <Route element={<LoggedOutRoute />}>
               <Route path="/signup" element={<Signup />} />

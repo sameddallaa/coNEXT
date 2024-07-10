@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import AuthContext from "../Contexts/AuthContext";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Button, Image } from "react-bootstrap";
 import { FaSearch, FaPlus } from "react-icons/fa";
 
-const ChatsSidebar = () => {
+const ChatsSidebar = ({ setChat }) => {
   const tokens = JSON.parse(localStorage.getItem("tokens"));
   const { user } = useContext(AuthContext);
   const [chats, setChats] = useState([]);
@@ -54,9 +54,15 @@ const ChatsSidebar = () => {
           </div>
         </div>
         {chats.map((chat, index) => (
-          <>
+          <React.Fragment key={index}>
             <hr className="m-0" />
-            <Link key={index} className="text-decoration-none">
+            <Link
+              className="text-decoration-none"
+              to={`/chats/${chat.id}`}
+              onClick={() => {
+                setChat(chat.id);
+              }}
+            >
               <div className="py-1">
                 <div className="py-2 d-flex">
                   <Image
@@ -68,17 +74,17 @@ const ChatsSidebar = () => {
                     roundedCircle
                     width={50}
                     height={50}
-                    className="mx-2"
+                    className="ms-2"
                   />
                   <div className="d-flex justify-content-between align-items-center w-100 mx-2">
                     <div className="d-flex flex-column justify-content-center">
-                      <Link className="text-decoration-none text-dark ">
+                      <span className="text-decoration-none text-dark">
                         {
                           chat.participants.filter(
                             (participant) => participant.id !== user.user_id
                           )[0].full_name
                         }
-                      </Link>
+                      </span>
                       {chat.last_message.sender.id && (
                         <p
                           className={`m-0 ps-1 small ${
@@ -118,7 +124,7 @@ const ChatsSidebar = () => {
                     </div>
                     {chat.unread_messages > 0 && (
                       <p
-                        className="rounded-circle bg-danger d-flex align-items-center justify-content-center text-light"
+                        className="m-0 rounded-circle bg-danger d-flex align-items-center justify-content-center text-light"
                         style={{ width: "30px", height: "30px" }}
                       >
                         {chat.unread_messages >= 100
@@ -131,7 +137,7 @@ const ChatsSidebar = () => {
               </div>
             </Link>
             <hr className="m-0" />
-          </>
+          </React.Fragment>
         ))}
       </div>
     </>

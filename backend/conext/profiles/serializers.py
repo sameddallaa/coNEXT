@@ -28,13 +28,9 @@ class UserSerializer(serializers.ModelSerializer):
         return obj.full_name
 
     def get_profile_image(self, obj):
-        return obj.profile_image.url
-
-    # def to_representation(self, instance):
-    #     representation = super().to_representation(instance)
-    #     if representation["profile_image"]:
-    #         representation["profile_image"] = representation["profile_image"].url
-    #     return representation
+        request = self.context.get("request")
+        if request and obj.profile_image is not None:
+            return request.build_absolute_uri(obj.profile_image.url)
 
     class Meta:
         model = User

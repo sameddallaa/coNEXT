@@ -54,7 +54,7 @@ class ChatDetailView(GenericAPIView):
             chat = Chat.objects.filter(pk=pk).first()
             if chat:
                 self.check_object_permissions(request, chat)
-                serializer = ChatDetailSerializer(chat)
+                serializer = ChatDetailSerializer(chat, context={"request": request})
                 return Response(serializer.data, status=status.HTTP_200_OK)
             return Response(
                 {"error": "Chat not found"}, status=status.HTTP_404_NOT_FOUND

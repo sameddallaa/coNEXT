@@ -35,7 +35,7 @@ class Message(models.Model):
     sent_at = models.DateTimeField(auto_now_add=True)
 
     def save(self, *args, **kwargs):
-        if not self.body and not self.post and not self.attachment:
+        if not (self.body ^ self.post ^ self.attachment):
             raise ValidationError(
                 "Message must have either a body, a post, or an attachment"
             )
