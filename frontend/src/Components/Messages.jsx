@@ -58,7 +58,10 @@ const Messages = () => {
       {toggle && (
         <>
           <hr className="m-0" />
-          <div className="" style={{ backgroundColor: "#dedede" }}>
+          <div
+            className="overflow-auto"
+            style={{ backgroundColor: "#dedede", maxHeight: "225px" }}
+          >
             {loading ? (
               <Lottie animationData={loadingAnimation} />
             ) : (
@@ -66,75 +69,89 @@ const Messages = () => {
                 <>
                   <div
                     key={index}
-                    className="d-flex ps-2 py-2 align-items-center"
+                    className="d-flex p-2 align-items-center justify-content-between"
                     style={{ backgroundColor: "#e9f6ff", cursor: "pointer" }}
                   >
-                    <div className="py-1">
-                      {chat.participants.filter(
-                        (participant) => participant.id !== user.user_id
-                      )[0].profile_image && (
-                        <Image
-                          src={
+                    <div className="d-flex">
+                      <div className="py-1">
+                        {chat.participants.filter(
+                          (participant) => participant.id !== user.user_id
+                        )[0].profile_image && (
+                          <Image
+                            src={
+                              chat.participants.filter(
+                                (participant) => participant.id !== user.user_id
+                              )[0].profile_image
+                            }
+                            roundedCircle
+                            width={50}
+                            height={50}
+                          />
+                        )}
+                      </div>
+
+                      <div className="d-flex flex-column p-2 justify-content-center">
+                        <Link
+                          className="text-decoration-none text-dark small"
+                          style={{
+                            fontWeight: 500,
+                          }}
+                          to={`/chats/${chat.id}`}
+                        >
+                          {
                             chat.participants.filter(
                               (participant) => participant.id !== user.user_id
-                            )[0].profile_image
+                            )[0].full_name
                           }
-                          roundedCircle
-                          width={50}
-                          height={50}
-                        />
-                      )}
-                    </div>
-                    <div className="d-flex flex-column py-2 px-2">
-                      <Link
-                        className="text-decoration-none text-dark small"
-                        style={{
-                          fontWeight: 500,
-                        }}
-                      >
-                        {
-                          chat.participants.filter(
-                            (participant) => participant.id !== user.user_id
-                          )[0].full_name
-                        }
-                      </Link>
-                      {chat.last_message.sender && (
-                        <p
-                          className={`m-0 ps-1 small ${
-                            chat.last_message.sender.id !== user.user_id &&
-                            chat.last_message.status !== "read"
-                              ? "text-dark"
-                              : "text-secondary"
-                          }`}
-                          style={{
-                            fontWeight:
+                        </Link>
+                        {chat.last_message.sender && (
+                          <p
+                            className={`m-0 ps-1 small ${
                               chat.last_message.sender.id !== user.user_id &&
                               chat.last_message.status !== "read"
-                                ? 700
-                                : 400,
-                          }}
-                        >
-                          {chat.last_message.body
-                            ? chat.last_message.sender.id === user.user_id
-                              ? `You: ${
-                                  chat.last_message.body.length > 20
-                                    ? chat.last_message.body.slice(0, 20) +
-                                      "..."
-                                    : chat.last_message.body
-                                }`
-                              : chat.last_message.body.length > 20
-                              ? chat.last_message.body.slice(0, 20) + "..."
-                              : chat.last_message.body
-                            : chat.last_message.attachment
-                            ? chat.last_message.sender.id === user.user_id
-                              ? "You: Attachment"
-                              : "Attachment"
-                            : chat.last_message.sender.id === user.user_id
-                            ? "You: Post"
-                            : "Post"}
-                        </p>
-                      )}
+                                ? "text-dark"
+                                : "text-secondary"
+                            }`}
+                            style={{
+                              fontWeight:
+                                chat.last_message.sender.id !== user.user_id &&
+                                chat.last_message.status !== "read"
+                                  ? 700
+                                  : 400,
+                            }}
+                          >
+                            {chat.last_message.body
+                              ? chat.last_message.sender.id === user.user_id
+                                ? `You: ${
+                                    chat.last_message.body.length > 20
+                                      ? chat.last_message.body.slice(0, 20) +
+                                        "..."
+                                      : chat.last_message.body
+                                  }`
+                                : chat.last_message.body.length > 20
+                                ? chat.last_message.body.slice(0, 20) + "..."
+                                : chat.last_message.body
+                              : chat.last_message.attachment
+                              ? chat.last_message.sender.id === user.user_id
+                                ? "You: Attachment"
+                                : "Attachment"
+                              : chat.last_message.sender.id === user.user_id
+                              ? "You: Post"
+                              : "Post"}
+                          </p>
+                        )}
+                      </div>
                     </div>
+                    {chat.unread_messages > 0 && (
+                      <p
+                        className="m-0 rounded-circle bg-danger d-flex align-items-center justify-content-center text-light"
+                        style={{ width: "30px", height: "30px" }}
+                      >
+                        {chat.unread_messages >= 100
+                          ? "99+"
+                          : chat.unread_messages}
+                      </p>
+                    )}
                   </div>
                   <hr className="m-0" />
                 </>

@@ -15,7 +15,7 @@ class ChatSerializer(serializers.ModelSerializer):
 
     def get_last_message(self, obj):
         last_message = obj.messages.all().order_by("-sent_at").first()
-        return MessageSerializer(last_message).data
+        return MessageSerializer(last_message, context=self.context).data
 
     def get_unread_messages(self, obj):
         unread_messages = obj.messages.exclude(status="read").count()

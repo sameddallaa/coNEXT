@@ -8,11 +8,11 @@ const Chats = () => {
   const { chatId } = useParams();
   const [chat, setChat] = useState(chatId);
   return (
-    <Row>
-      <Col xs={4} className="vh-100" style={{ overflowY: "auto" }}>
+    <Row className="m-0">
+      <Col xs={4} className="p-0 vh-100 overflow-auto">
         <ChatsSidebar setChat={setChat} />
       </Col>
-      <Col className="vh-100" style={{ overflowY: "auto" }}>
+      <Col className="p-0 vh-100 overflow-auto">
         <Chat chat={chat} />
       </Col>
     </Row>

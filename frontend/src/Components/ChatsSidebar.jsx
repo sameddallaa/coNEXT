@@ -36,7 +36,7 @@ const ChatsSidebar = ({ setChat }) => {
   return (
     <>
       <div className="vh-100 bg-light">
-        <div className="d-flex align-items-center justify-content-between ps-3 pe-2 py-2">
+        <div className="d-flex align-items-center justify-content-between ps-3 pe-2 py-3">
           <h4>Chats</h4>
           <div className="d-flex align-items-center me-2">
             <Button
