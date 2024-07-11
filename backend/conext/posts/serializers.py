@@ -4,11 +4,17 @@ from .models import Post, Comment
 
 class PostSerializer(serializers.ModelSerializer):
     comments = serializers.SerializerMethodField()
+    owner = serializers.SerializerMethodField()
     owner_name = serializers.CharField(source="owner.full_name", read_only=True)
     comment_count = serializers.SerializerMethodField()
     attachment = serializers.SerializerMethodField()
     like_count = serializers.SerializerMethodField()
     profile_image = serializers.FileField(source="owner.profile_image")
+
+    def get_owner(self, obj):
+        from profiles.serializers import UserSerializer
+
+        return UserSerializer(obj.owner, context=self.context).data
 
     def get_comments(self, obj):
         return CommentSerializer(obj.post_comments.all(), many=True).data

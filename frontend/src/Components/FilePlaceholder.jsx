@@ -28,7 +28,6 @@ const FilePlaceholder = ({ post, setPost, imageRef, attachmentRef }) => {
           style={{
             width: "90px",
             height: "auto",
-            //   filter: "opacity(50%)",
           }}
           thumbnail
         />

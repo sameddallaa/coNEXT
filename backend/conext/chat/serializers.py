@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Chat, Message
 from profiles.serializers import UserSerializer
+from posts.serializers import PostSerializer
 
 
 class ChatSerializer(serializers.ModelSerializer):
@@ -29,12 +30,16 @@ class ChatSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
     sender = serializers.SerializerMethodField()
     receiver = serializers.SerializerMethodField()
+    post = serializers.SerializerMethodField()
 
     def get_sender(self, obj):
         return UserSerializer(obj.sender, context=self.context).data
 
     def get_receiver(self, obj):
         return UserSerializer(obj.receiver, context=self.context).data
+
+    def get_post(self, obj):
+        return PostSerializer(obj.post, context=self.context).data
 
     class Meta:
         model = Message

@@ -53,14 +53,6 @@ export const UtilsProvider = ({ children }) => {
     }
     return `just now`;
   };
-  const imageMimeTypes = [
-    "image/jpeg",
-    "image/png",
-    "image/gif",
-    "image/webp",
-    "image/bmp",
-    "image/svg+xml",
-  ];
 
   const isImage = (file) => {
     const pattern = /\.(jpg|jpeg|png|gif|svg)$/i;

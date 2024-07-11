@@ -8,6 +8,7 @@ import UtilsContext from "../Contexts/UtilsContext";
 import { Link } from "react-router-dom";
 import chatBg from "../assets/img/chatBg.jpg";
 import { FaImage, FaPaperclip, FaPaperPlane } from "react-icons/fa";
+import PostSnippet from "./PostSnippet";
 const Chat = ({ chat }) => {
   const tokens = JSON.parse(localStorage.getItem("tokens"));
   const { user } = useContext(AuthContext);
@@ -17,6 +18,7 @@ const Chat = ({ chat }) => {
   const [contact, setContact] = useState({});
   const [message, setMessage] = useState({ body: "", attachment: null });
   const messagesEndRef = useRef(null);
+  const bodyRef = useRef("");
   const imageRef = useRef(null);
   const fileRef = useRef(null);
 
@@ -75,6 +77,9 @@ const Chat = ({ chat }) => {
       const data = response.data;
       if (response.status === 201) {
         console.log(data);
+        bodyRef.current = "";
+        imageRef.current = null;
+        fileRef.current = null;
       } else {
         console.log("something went wrong");
       }
@@ -127,15 +132,15 @@ const Chat = ({ chat }) => {
                       className={`mx-2 d-flex ${
                         message.sender.id === user.user_id
                           ? "flex-column"
-                          : "align-items-center"
+                          : "align-items-end"
                       }`}
                     >
                       {message.sender.id !== user.user_id && (
                         <Image
                           src={message.sender.profile_image}
                           roundedCircle
-                          width={50}
-                          height={50}
+                          width={35}
+                          height={35}
                         />
                       )}
                       <div
@@ -158,10 +163,27 @@ const Chat = ({ chat }) => {
                               style={{ maxWidth: "100%" }}
                             />
                           ) : (
-                            "File"
+                            <Link
+                              className="rounded pt-4 text-decoration-none text-dark"
+                              style={{ backgroundColor: "#e2e6e9" }}
+                              to={message.attachment}
+                            >
+                              <div className="d-flex align-items-center justify-content-center m-4">
+                                <FaPaperclip />
+                              </div>
+                              <div
+                                className="text-success d-flex justify-content-center align-items-center p-2 rounded-bottom fw-bold"
+                                style={{
+                                  wordWrap: "break-word",
+                                  backgroundColor: "#bbc4d4",
+                                }}
+                              >
+                                {message.attachment.split("/").pop()}
+                              </div>
+                            </Link>
                           )
                         ) : (
-                          "Post"
+                          <PostSnippet post={message.post} />
                         )}
                       </div>
                     </div>
@@ -185,6 +207,7 @@ const Chat = ({ chat }) => {
               type="text"
               placeholder="Type in a message"
               name="body"
+              ref={bodyRef}
               onChange={handleChange}
             />
             <InputGroup.Text style={{ backgroundColor: "white" }}>
