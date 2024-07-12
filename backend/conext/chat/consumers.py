@@ -17,6 +17,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
+        print(text_data_json)
         body = text_data_json.get("body", "")
         sender = text_data_json["sender"]
         receiver = text_data_json.get("receiver")
@@ -48,21 +49,37 @@ class ChatConsumer(AsyncWebsocketConsumer):
             },
         )
 
-        async def chat_message(self, event):
-            body = event["body"]
-            sender = event["sender"]
-            receiver = event["receiver"]
-            attachment = event["attachment"]
-            post = event["post"]
+    async def send_message(self, event):
+        body = event["body"]
+        sender = event["sender"]
+        receiver = event["receiver"]
+        attachment = event["attachment"]
+        post = event["post"]
 
-            await self.send(
-                text_data=json.dumps(
-                    {
-                        "body": body,
-                        "sender": sender,
-                        "receiver": receiver,
-                        "attachment": attachment,
-                        "post": post,
-                    }
-                )
+        await self.send(
+            text_data=json.dumps(
+                {
+                    "body": body,
+                    "sender": sender,
+                    "receiver": receiver,
+                    "attachment": attachment,
+                    "post": post,
+                }
             )
+        )
+
+    @database_sync_to_async
+    def create_message(self, data):
+        get_chat_by_id = Chat.objects.filter(id=data["chat_id"]).first()
+        get_sender_by_id = User.objects.filter(id=data["sender"]).first()
+        get_receiver_by_id = User.objects.filter(id=data["receiver"]).first()
+        get_post_by_id = User.objects.filter(id=data["post"]).first()
+        new_message = Message.objects.create(
+            chat=get_chat_by_id,
+            sender=get_sender_by_id,
+            receiver=get_receiver_by_id,
+            body=data["body"],
+            attachment=data["attachment"],
+            post=get_post_by_id,
+        )
+        new_message.save()

@@ -17,12 +17,23 @@ const Chat = ({ chat }) => {
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [contact, setContact] = useState({});
-  const [message, setMessage] = useState({ body: "", attachment: null });
-  const [socket, setSocket] = useState(null);
+  const [message, setMessage] = useState({
+    chat: chat,
+    sender: user.user_id,
+    receiver: "",
+    body: "",
+    attachment: null,
+  });
   const messagesEndRef = useRef(null);
   const bodyRef = useRef("");
   const imageRef = useRef(null);
   const fileRef = useRef(null);
+  const socketRef = useRef(null);
+
+  // ws.onopen = () => {
+  //   console.log("connection opened");
+  //   return () => ws.close();
+  // };
 
   useEffect(() => {
     async function fetchMessages() {
@@ -41,15 +52,11 @@ const Chat = ({ chat }) => {
             data.participants.filter(
               (participant) => participant.id !== user.user_id
             )[0]
-          ),
-            setLoading(false);
-          const ws = new WebSocket(`ws://localhost:8000/ws/chat/${chat}/`);
-          ws.onmessage = (e) => {
-            const data = JSON.parse(e.data);
-            setMessages((prevMessages) => [...prevMessages, data]);
-            setSocket(ws);
-            return () => ws.close();
-          };
+          );
+          setMessage((prevMessage) => {
+            return { ...prevMessage, receiver: contact.id };
+          });
+          setLoading(false);
         } else {
           console.log("something went wrong");
         }
@@ -58,6 +65,24 @@ const Chat = ({ chat }) => {
       }
     }
     fetchMessages();
+  }, [chat]);
+
+  useEffect(() => {
+    const WEBSOCKET_URL = `ws://localhost:8000/ws/chat/${chat}/`;
+    socketRef.current = new WebSocket(WEBSOCKET_URL);
+    socketRef.current.onopen = (e) => {
+      console.log("connection opened!");
+    };
+    socketRef.current.onclose = (e) => {
+      console.log("connection closed!");
+    };
+    socketRef.current.onerror = (e) => {
+      console.log("WebSocket error occurred!", e);
+    };
+
+    // return () => {
+    //   socketRef.current.close();
+    // };
   }, [chat]);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView();
@@ -69,39 +94,17 @@ const Chat = ({ chat }) => {
   const handleChange = (e) => {
     if (e.target.name === "body") {
       setMessage({ ...message, body: e.target.value });
-      console.log(socket);
+      console.log(message);
     } else if (e.target.name === "image" || e.target.name === "file") {
       setMessage({ ...message, body: e.target.files[0] });
     }
   };
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     const SEND_MESSAGE_ENDPOINT = `http://localhost:8000/api/chats/users/${contact.id}/send`;
-  //     const response = await axios.post(SEND_MESSAGE_ENDPOINT, message, {
-  //       headers: {
-  //         "Content-Type": "multipart/form-data",
-  //         Authorization: `Bearer ${tokens.access}`,
-  //       },
-  //     });
-  //     const data = response.data;
-  //     if (response.status === 201) {
-  //       console.log(data);
-  //       bodyRef.current = "";
-  //       imageRef.current = null;
-  //       fileRef.current = null;
-  //     } else {
-  //       console.log("something went wrong");
-  //     }
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(message);
-    socket.send(JSON.stringify(message));
+    // console.log(socket);
+    socketRef.current.send(JSON.stringify(message));
     setMessage({ body: "", attachment: null });
     bodyRef.current.value = "";
     imageRef.current.value = null;
