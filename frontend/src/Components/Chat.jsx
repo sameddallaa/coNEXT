@@ -18,6 +18,7 @@ const Chat = ({ chat }) => {
   const [loading, setLoading] = useState(true);
   const [contact, setContact] = useState({});
   const [message, setMessage] = useState({ body: "", attachment: null });
+  const [socket, setSocket] = useState(null);
   const messagesEndRef = useRef(null);
   const bodyRef = useRef("");
   const imageRef = useRef(null);
@@ -42,6 +43,13 @@ const Chat = ({ chat }) => {
             )[0]
           ),
             setLoading(false);
+          const ws = new WebSocket(`ws://localhost:8000/ws/chat/${chat}/`);
+          ws.onmessage = (e) => {
+            const data = JSON.parse(e.data);
+            setMessages((prevMessages) => [...prevMessages, data]);
+            setSocket(ws);
+            return () => ws.close();
+          };
         } else {
           console.log("something went wrong");
         }
@@ -61,32 +69,43 @@ const Chat = ({ chat }) => {
   const handleChange = (e) => {
     if (e.target.name === "body") {
       setMessage({ ...message, body: e.target.value });
+      console.log(socket);
     } else if (e.target.name === "image" || e.target.name === "file") {
       setMessage({ ...message, body: e.target.files[0] });
     }
   };
-  const handleSubmit = async (e) => {
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     const SEND_MESSAGE_ENDPOINT = `http://localhost:8000/api/chats/users/${contact.id}/send`;
+  //     const response = await axios.post(SEND_MESSAGE_ENDPOINT, message, {
+  //       headers: {
+  //         "Content-Type": "multipart/form-data",
+  //         Authorization: `Bearer ${tokens.access}`,
+  //       },
+  //     });
+  //     const data = response.data;
+  //     if (response.status === 201) {
+  //       console.log(data);
+  //       bodyRef.current = "";
+  //       imageRef.current = null;
+  //       fileRef.current = null;
+  //     } else {
+  //       console.log("something went wrong");
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const SEND_MESSAGE_ENDPOINT = `http://localhost:8000/api/chats/users/${contact.id}/send`;
-      const response = await axios.post(SEND_MESSAGE_ENDPOINT, message, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${tokens.access}`,
-        },
-      });
-      const data = response.data;
-      if (response.status === 201) {
-        console.log(data);
-        bodyRef.current = "";
-        imageRef.current = null;
-        fileRef.current = null;
-      } else {
-        console.log("something went wrong");
-      }
-    } catch (err) {
-      console.log(err);
-    }
+    console.log(message);
+    socket.send(JSON.stringify(message));
+    setMessage({ body: "", attachment: null });
+    bodyRef.current.value = "";
+    imageRef.current.value = null;
+    fileRef.current.value = null;
   };
   return (
     <div>
@@ -96,9 +115,9 @@ const Chat = ({ chat }) => {
         </div>
       ) : (
         <>
-          <div className="d-flex flex-column align-items-center justify-content-center bg-secondary py-2">
+          <div className="d-flex flex-column align-items-center justify-content-center bg-secondary py-2 px-0">
             {!loading && (
-              <Row className="m-0">
+              <Row className="m-0 d-flex justify-content-center">
                 <Link className="text-decoration-none text-light fw-bold d-flex flex-column align-items-center">
                   <Image
                     src={contact.profile_image}
@@ -108,11 +127,23 @@ const Chat = ({ chat }) => {
                   />
                   {contact.full_name}
                   <p className="m-0">{contact.username}</p>
+                  {contact.bio && (
+                    <p
+                      className="my-1 fw-light "
+                      style={{ maxWidth: "25%", wordWrap: "break-word" }}
+                    >
+                      {contact.bio}
+                    </p>
+                  )}
                 </Link>
-                {contact.bio && <p className="m-0">{contact.bio}</p>}
-                <Link className="text-decoration-none text-light fw-bold bg-success rounded-pill py-1 px-2 mt-2 d-flex justify-content-center">
-                  Visit profile
-                </Link>
+                <Button
+                  variant="success"
+                  className="rounded-pill py-1 px-2 mt-2"
+                >
+                  <Link className="text-decoration-none text-light fw-bold d-flex justify-content-center">
+                    Visit profile
+                  </Link>
+                </Button>
               </Row>
             )}
           </div>
@@ -195,7 +226,7 @@ const Chat = ({ chat }) => {
               </div>
             </Row>
           ) : (
-            <Row>
+            <Row className="m-0">
               <NoMessagesYet />
             </Row>
           )}

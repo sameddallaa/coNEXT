@@ -12,7 +12,7 @@ const Chats = () => {
       <Col xs={4} className="p-0 vh-100 overflow-auto">
         <ChatsSidebar setChat={setChat} />
       </Col>
-      <Col className="p-0 vh-100 overflow-auto">
+      <Col className="p-0 m-0 vh-100 overflow-auto">
         <Chat chat={chat} />
       </Col>
     </Row>
