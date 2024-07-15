@@ -61,7 +61,7 @@ const SiteNavbar = () => {
               </Nav.Link>
               <Nav.Link
                 className="d-flex align-items-center mx-1 text-dark"
-                href="#contact"
+                href="/chats/"
                 style={{ fontWeight: "500" }}
               >
                 <BiSolidMessage className="me-1 text-success" />

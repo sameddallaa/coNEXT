@@ -5,7 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import { Button, Image } from "react-bootstrap";
 import { FaSearch, FaPlus } from "react-icons/fa";
 
-const ChatsSidebar = ({ setChat }) => {
+const ChatsSidebar = ({ messages, setChat }) => {
   const tokens = JSON.parse(localStorage.getItem("tokens"));
   const { user } = useContext(AuthContext);
   const [chats, setChats] = useState([]);
@@ -32,7 +32,7 @@ const ChatsSidebar = ({ setChat }) => {
       }
     }
     fetchChats();
-  }, []);
+  }, [messages]);
   return (
     <>
       <div className="vh-100 bg-light">

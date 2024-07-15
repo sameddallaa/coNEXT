@@ -6,14 +6,15 @@ import Chat from "./Chat";
 
 const Chats = () => {
   const { chatId } = useParams();
+  const [messages, setMessages] = useState([]);
   const [chat, setChat] = useState(chatId);
   return (
     <Row className="m-0">
       <Col xs={4} className="p-0 vh-100 overflow-auto">
-        <ChatsSidebar setChat={setChat} />
+        <ChatsSidebar messages={messages} setChat={setChat} />
       </Col>
       <Col className="p-0 m-0 vh-100 overflow-auto">
-        <Chat chat={chat} />
+        <Chat chat={chat} messages={messages} setMessages={setMessages} />
       </Col>
     </Row>
   );
