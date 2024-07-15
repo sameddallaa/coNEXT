@@ -29,7 +29,12 @@ class MyTokenObtainPairView(TokenObtainPairView):
         return super(MyTokenObtainPairView, self).post(request, *args, **kwargs)
 
 
-class UserRetrieveView(ListAPIView):
+class UserListView(ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserRetrieveView(RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 

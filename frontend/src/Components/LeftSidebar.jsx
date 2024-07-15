@@ -18,6 +18,7 @@ const LeftSidebar = ({ owner }) => {
             <Link
               className="text-decoration-none text-dark"
               style={{ fontWeight: 500 }}
+              to={`/profiles/${owner.id}`}
             >
               {owner.full_name}
             </Link>
