@@ -10,14 +10,15 @@ import chatBg from "../assets/img/chatBg.jpg";
 import { FaImage, FaPaperclip, FaPaperPlane } from "react-icons/fa";
 import PostSnippet from "./PostSnippet";
 import NoMessagesYet from "./NoMessagesYet";
-const Chat = ({ messages, setMessages, chat }) => {
+const Chat = ({ messages, setMessages, chatId }) => {
   const tokens = JSON.parse(localStorage.getItem("tokens"));
   const { user } = useContext(AuthContext);
   const { isImage } = useContext(UtilsContext);
   const [loading, setLoading] = useState(true);
+  const [chat, setChat] = useState(null);
   const [contact, setContact] = useState({});
   const [message, setMessage] = useState({
-    chat: chat,
+    chat: chatId,
     sender: user.user_id,
     receiver: "",
     body: "",
@@ -29,14 +30,40 @@ const Chat = ({ messages, setMessages, chat }) => {
   const fileRef = useRef(null);
   const socketRef = useRef(null);
 
-  // ws.onopen = () => {
-  //   console.log("connection opened");
-  //   return () => ws.close();
-  // };
-
+  useEffect(() => {
+    setChat(chatId);
+    console.log(chat);
+  }, [chatId]);
   useEffect(() => {
     setMessage((prevMessage) => ({ ...prevMessage, receiver: contact.id }));
   }, [contact]);
+
+  useEffect(() => {
+    async function fetchContact() {
+      if (chat) {
+        try {
+          const PARTICIPANTS_ENDPOINT = `http://localhost:8000/api/chats/${chat}/participants`;
+          const response = await axios.get(PARTICIPANTS_ENDPOINT, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${tokens.access}`,
+            },
+          });
+          const data = response.data;
+          if (response.status === 200) {
+            setContact(
+              data.filter((participant) => participant.id !== user.user_id)[0]
+            );
+          } else {
+            console.log("something went wrong");
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    }
+    fetchContact();
+  }, [chat]);
 
   useEffect(() => {
     async function fetchMessages() {
@@ -50,16 +77,7 @@ const Chat = ({ messages, setMessages, chat }) => {
         });
         const data = response.data;
         if (response.status === 200) {
-          setMessages(data.messages);
-          setContact(
-            data.participants.filter(
-              (participant) => participant.id !== user.user_id
-            )[0]
-          );
-          setMessage((prevMessage) => ({
-            ...prevMessage,
-            receiver: contact.id,
-          }));
+          setMessages(data.results);
           setLoading(false);
         } else {
           console.log("something went wrong");
@@ -69,8 +87,11 @@ const Chat = ({ messages, setMessages, chat }) => {
       }
     }
     fetchMessages();
-  }, [chat, message]);
+  }, [chat, contact, message]);
 
+  useEffect(() => {
+    setMessage((prevMessage) => ({ ...prevMessage, receiver: contact.id }));
+  }, [contact]);
   useEffect(() => {
     const initializeWebSocket = () => {
       if (socketRef.current) {

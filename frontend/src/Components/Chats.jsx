@@ -14,7 +14,7 @@ const Chats = () => {
         <ChatsSidebar messages={messages} setChat={setChat} />
       </Col>
       <Col className="p-0 m-0 vh-100 overflow-auto">
-        <Chat chat={chat} messages={messages} setMessages={setMessages} />
+        <Chat chatId={chat} messages={messages} setMessages={setMessages} />
       </Col>
     </Row>
   );

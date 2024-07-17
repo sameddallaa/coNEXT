@@ -15,6 +15,7 @@ from rest_framework.views import Response, status
 from .permissions import IsParticipant, IsSenderOrReceiver
 from profiles.models import User
 from django.core.exceptions import ValidationError
+from rest_framework.pagination import PageNumberPagination
 
 # Create your views here.
 
@@ -41,7 +42,7 @@ class MessagesListView(ListAPIView):
 
 class ChatDetailView(GenericAPIView):
     queryset = Chat.objects.all()
-    permission_classes = [IsParticipant]
+    # permission_classes = [IsParticipant]
     authentication_classes = [
         SessionAuthentication,
         JWTAuthentication,
@@ -54,14 +55,35 @@ class ChatDetailView(GenericAPIView):
             chat = Chat.objects.filter(pk=pk).first()
             if chat:
                 self.check_object_permissions(request, chat)
-                serializer = ChatDetailSerializer(chat, context={"request": request})
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                paginator = PageNumberPagination()
+                paginator.page_size = 50
+                paginated_messages = paginator.paginate_queryset(
+                    chat.messages.all().order_by("-sent_at"), request
+                )
+                serializer = MessageSerializer(
+                    paginated_messages, context={"request": request}, many=True
+                )
+                return paginator.get_paginated_response(serializer.data)
             return Response(
                 {"error": "Chat not found"}, status=status.HTTP_404_NOT_FOUND
             )
         return Response(
             {"error": "Chat id not provided"}, status=status.HTTP_400_BAD_REQUEST
         )
+
+
+class ChatParticipantsView(GenericAPIView):
+    queryset = Chat.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        pk = kwargs.get("pk")
+        chat = Chat.objects.filter(pk=pk).first()
+        if not chat:
+            raise ValueError(f"Chat with pk: {pk} does not exist. ")
+        from profiles.serializers import UserSerializer
+
+        serializer = UserSerializer(chat.participants.all(), many=True).data
+        return Response(serializer, status=status.HTTP_200_OK)
 
 
 class NewMessageView(GenericAPIView):
