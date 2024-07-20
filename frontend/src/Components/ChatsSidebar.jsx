@@ -1,13 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
 import AuthContext from "../Contexts/AuthContext";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button, Image } from "react-bootstrap";
-import { FaSearch, FaPlus } from "react-icons/fa";
+import { FaSearch, FaPlus, FaHome, FaPowerOff } from "react-icons/fa";
+import classes from "../CSS/ChatsSidebar.module.css";
 
 const ChatsSidebar = ({ messages, setChat }) => {
   const tokens = JSON.parse(localStorage.getItem("tokens"));
-  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const { user, logout } = useContext(AuthContext);
   const [chats, setChats] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -40,16 +42,34 @@ const ChatsSidebar = ({ messages, setChat }) => {
           <h4>Chats</h4>
           <div className="d-flex align-items-center me-2">
             <Button
-              className="d-flex align-items-center rounded-circle p-2 mx-2"
+              className="d-flex align-items-center rounded-circle p-2 mx-1"
+              variant="success"
+              onClick={() => {
+                navigate("/");
+              }}
+            >
+              <FaHome />
+            </Button>
+            <Button
+              className="d-flex align-items-center rounded-circle p-2 mx-1"
               variant="success"
             >
               <FaSearch />
             </Button>
             <Button
-              className="d-flex align-items-center rounded-circle p-2"
+              className="d-flex align-items-center rounded-circle p-2 mx-1"
               variant="success"
             >
               <FaPlus />
+            </Button>
+            <Button
+              className="d-flex align-items-center rounded-circle p-2 mx-1"
+              variant="success"
+              onClick={() => {
+                logout();
+              }}
+            >
+              <FaPowerOff />
             </Button>
           </div>
         </div>
@@ -57,13 +77,13 @@ const ChatsSidebar = ({ messages, setChat }) => {
           <React.Fragment key={index}>
             <hr className="m-0" />
             <Link
-              className="text-decoration-none"
+              className={`text-decoration-none`}
               to={`/chats/${chat.id}`}
               onClick={() => {
                 setChat(chat.id);
               }}
             >
-              <div className="py-1">
+              <div className={`py-1  ${classes.chat}`}>
                 <div className="py-2 d-flex">
                   <Image
                     src={
@@ -76,7 +96,9 @@ const ChatsSidebar = ({ messages, setChat }) => {
                     height={50}
                     className="ms-2"
                   />
-                  <div className="d-flex justify-content-between align-items-center w-100 mx-2">
+                  <div
+                    className={`d-flex justify-content-between align-items-center w-100 mx-2 `}
+                  >
                     <div className="d-flex flex-column justify-content-center">
                       <span className="text-decoration-none text-dark">
                         {
