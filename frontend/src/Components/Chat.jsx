@@ -16,6 +16,8 @@ const Chat = ({ messages, setMessages, chatId }) => {
   const { isImage } = useContext(UtilsContext);
   const [loading, setLoading] = useState(true);
   const [chat, setChat] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
   const [contact, setContact] = useState({});
   const [message, setMessage] = useState({
     chat: chatId,
@@ -67,27 +69,44 @@ const Chat = ({ messages, setMessages, chatId }) => {
 
   useEffect(() => {
     async function fetchMessages() {
-      try {
-        const MESSAGES_ENDPOINT = `http://localhost:8000/api/chats/${chat}/messages`;
-        const response = await axios.get(MESSAGES_ENDPOINT, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokens.access}`,
-          },
-        });
-        const data = response.data;
-        if (response.status === 200) {
-          setMessages(data.results);
-          setLoading(false);
-        } else {
-          console.log("something went wrong");
+      if (chat) {
+        if (!hasMore) return;
+        try {
+          const MESSAGES_ENDPOINT = `http://localhost:8000/api/chats/${chat}/messages?page=${currentPage}`;
+          const response = await axios.get(MESSAGES_ENDPOINT, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${tokens.access}`,
+            },
+          });
+          const data = response.data;
+          if (response.status === 200) {
+            setMessages(data.results);
+            setLoading(false);
+            if (data.results.length < 50) setHasMore(false);
+          } else {
+            console.log("something went wrong");
+          }
+        } catch (err) {
+          console.log(err);
         }
-      } catch (err) {
-        console.log(err);
       }
     }
     fetchMessages();
-  }, [chat, contact, message]);
+  }, [chat, contact, message, currentPage]);
+
+  useEffect(() => {
+    if (chat) {
+      const messageList = document.getElementById("messagesContainer");
+      const handleScroll = () => {
+        if (messageList.scrollTop < 100 && hasMore) {
+          setCurrentPage((currentPage) => currentPage + 1);
+        }
+      };
+      messageList.addEventListener("scroll", handleScroll);
+      return () => messageList.removeEventListener("scroll", handleScroll);
+    }
+  }, [hasMore]);
 
   useEffect(() => {
     setMessage((prevMessage) => ({ ...prevMessage, receiver: contact.id }));
@@ -209,6 +228,7 @@ const Chat = ({ messages, setMessages, chatId }) => {
                       backgroundRepeat: "no-repeat",
                       backgroundPosition: "center",
                     }}
+                    id="messagesContainer"
                   >
                     {messages.map((message, index) => (
                       <React.Fragment key={index}>

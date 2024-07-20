@@ -42,7 +42,6 @@ class MessagesListView(ListAPIView):
 
 class ChatDetailView(GenericAPIView):
     queryset = Chat.objects.all()
-    # permission_classes = [IsParticipant]
     authentication_classes = [
         SessionAuthentication,
         JWTAuthentication,
@@ -55,6 +54,9 @@ class ChatDetailView(GenericAPIView):
             chat = Chat.objects.filter(pk=pk).first()
             if chat:
                 self.check_object_permissions(request, chat)
+                Message.objects.filter(chat=chat).filter(status="sent").update(
+                    status="read"
+                )
                 paginator = PageNumberPagination()
                 paginator.page_size = 50
                 paginated_messages = paginator.paginate_queryset(

@@ -8,6 +8,7 @@ import { Row, Col, Form } from "react-bootstrap";
 import axios from "axios";
 import Lottie from "lottie-react";
 import loadingAnimation from "../assets/animations/loadingAnimation.json";
+import noFeedAnimation from "../assets/animations/noFeed.json";
 import LeftSidebar from "./LeftSidebar";
 import Messages from "./Messages";
 const Homepage = () => {
@@ -60,12 +61,22 @@ const Homepage = () => {
               {feed ? (
                 <Feed posts={feed.posts} image={feed.profile_image} />
               ) : (
-                <div>Homepage</div>
+                <div className="vh-100 d-flex justify-content-center align-items-center">
+                  <Lottie
+                    animationData={noFeedAnimation}
+                    style={{ width: "400px" }}
+                  />
+                </div>
               )}
             </Col>
           </>
         ) : (
-          "nothing yet"
+          <div className="vh-100 d-flex justify-content-center align-items-center">
+            <Lottie
+              animationData={noFeedAnimation}
+              style={{ width: "400px" }}
+            />
+          </div>
         )}
       </Row>
       <Messages />
