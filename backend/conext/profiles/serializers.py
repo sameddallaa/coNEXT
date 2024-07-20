@@ -49,6 +49,19 @@ class UserSerializer(serializers.ModelSerializer):
         )
 
 
+class UserProfileImageSerializer(serializers.ModelSerializer):
+    profile_image = serializers.SerializerMethodField()
+
+    def get_profile_image(self, obj):
+        request = self.context.get("request")
+        if request and obj.profile_image is not None:
+            return request.build_absolute_uri(obj.profile_image.url)
+
+    class Meta:
+        model = User
+        fields = ["id", "profile_image"]
+
+
 class BriefUserSerializer(serializers.ModelSerializer):
 
     class Meta:

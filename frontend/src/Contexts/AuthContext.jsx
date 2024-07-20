@@ -16,6 +16,7 @@ export const AuthProvider = ({ children }) => {
     currentToken ? jwtDecode(JSON.parse(currentToken).access) : null
   );
   const navigate = useNavigate();
+  const [profileImage, setProfileImage] = useState(null);
 
   const login = async (email, password) => {
     // const ENDPOINT = import.meta.LOGIN_URL;
@@ -89,11 +90,35 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token]);
 
+  useEffect(() => {
+    async function fetchPfp() {
+      if (user) {
+        try {
+          const PFP_ENDPOINT = `http://localhost:8000/api/users/${user.user_id}/pfp`;
+          const response = await axios.get(PFP_ENDPOINT, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: token.access,
+            },
+          });
+          const data = response.data;
+          if (response.status === 200) {
+            setProfileImage(data.profile_image);
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    }
+    fetchPfp();
+  }, [user]);
+
   const contextData = {
     user: user,
     login: login,
     logout: logout,
     updateTokens: updateTokens,
+    profileImage: profileImage,
   };
   return (
     <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>

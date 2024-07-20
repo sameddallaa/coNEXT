@@ -7,6 +7,7 @@ from .serializers import (
     SignupSerializer,
     UserFeedSerializer,
     UserChatsSerializer,
+    UserProfileImageSerializer,
 )
 from .permissions import IsOwnerOrAdmin
 from rest_framework.views import APIView, Response, status
@@ -95,5 +96,24 @@ class UserPostsView(GenericAPIView):
         except User.DoesNotExist:
             return Response(
                 {"detail": "User with this id does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+
+class UserProfileImageView(GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserProfileImageSerializer
+
+    def get(self, request, *args, **kwargs):
+        user = kwargs.get("pk")
+        try:
+            user = User.objects.get(pk=user)
+            profile_image = self.serializer_class(
+                user, context={"request": request}
+            ).data
+            return Response(profile_image, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response(
+                {"error": "user with provided id does not exist"},
                 status=status.HTTP_404_NOT_FOUND,
             )
