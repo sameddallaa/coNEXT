@@ -14,6 +14,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import GenericAPIView
 from rest_framework import permissions, authentication
+from posts.models import Post
+from posts.serializers import PostSerializer
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -76,3 +78,22 @@ class UserChatsView(GenericAPIView):
         user = User.objects.get(pk=user)
         serializer = UserChatsSerializer(user, context={"request": request})
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class UserPostsView(GenericAPIView):
+
+    queryset = User.objects.all()
+    serializer_class = PostSerializer
+
+    def get(self, request, *args, **kwargs):
+        user = kwargs.get("pk")
+        try:
+            user = User.objects.get(pk=user)
+            posts = Post.objects.filter(owner=user)
+            serializer = PostSerializer(posts, context={"request": request}, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response(
+                {"detail": "User with this id does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )

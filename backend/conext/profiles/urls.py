@@ -7,4 +7,5 @@ urlpatterns = [
     path("feed/<int:pk>", view=views.UserFeedView.as_view(), name="UserFeedView"),
     path("chats/<int:pk>", view=views.UserChatsView.as_view(), name="UserChatsView"),
     path("<int:pk>", view=views.UserRetrieveView.as_view(), name="UserRetrieveView"),
+    path("<int:pk>/posts", view=views.UserPostsView.as_view(), name="UserPostsView"),
 ]
