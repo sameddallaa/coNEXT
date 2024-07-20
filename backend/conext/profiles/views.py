@@ -7,13 +7,14 @@ from .serializers import (
     SignupSerializer,
     UserFeedSerializer,
     UserChatsSerializer,
+    PublicProfileSerializer,
     UserProfileImageSerializer,
 )
 from .permissions import IsOwnerOrAdmin
 from rest_framework.views import APIView, Response, status
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, UpdateAPIView
 from rest_framework import permissions, authentication
 from posts.models import Post
 from posts.serializers import PostSerializer
@@ -117,3 +118,34 @@ class UserProfileImageView(GenericAPIView):
                 {"error": "user with provided id does not exist"},
                 status=status.HTTP_404_NOT_FOUND,
             )
+
+
+class EditProfileView(UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = PublicProfileSerializer
+
+    # def post(self, request, *args, **kwargs):
+    #     user = kwargs.get("pk")
+    #     try:
+    #         user = User.objects.get(pk=user)
+    #     except User.DoesNotExist:
+    #         return Response(
+    #             {"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
+    #         )
+
+    #     fields = {
+    #         "first_name": request.data.get("first_name", None),
+    #         "last_name": request.data.get("last_name", None),
+    #         "bio": request.data.get("bio", None),
+    #         "profile_image": request.data.get("profile_image", None),
+    #     }
+
+    #     for field, value in fields:
+    #         if value is not None:
+    #             setattr(user, field, value)
+
+    #     user.save()
+
+    #     return Response(
+    #         {"success": "user updated successfully"}, status=status.HTTP_200_OK
+    #     )

@@ -196,7 +196,9 @@ const Profile = () => {
             <Col>
               <div className="m-3 p-2 rounded bg-secondary">
                 <AddPost image={profileImage} />
-                <span className="ms-2 text-light">Posts</span>
+                <span className="ms-2 text-light">
+                  {profile.first_name}'s posts
+                </span>
                 {posts?.map((post, index) => (
                   <Post image={profile.profile_image} post={post} key={index} />
                 ))}

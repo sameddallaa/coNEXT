@@ -70,7 +70,7 @@ const AddPost = ({ image }) => {
 
   return (
     <>
-      <div className="mb-5">
+      <div className="mb-3">
         <Form className="p-2 py-3 bg-light m-2 rounded" onSubmit={handleSubmit}>
           <div className="d-flex">
             <img

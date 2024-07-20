@@ -13,4 +13,5 @@ urlpatterns = [
         name="UserProfileImageView",
     ),
     path("<int:pk>/posts", view=views.UserPostsView.as_view(), name="UserPostsView"),
+    path("<int:pk>/edit", view=views.EditProfileView.as_view(), name="EditProfileView"),
 ]
