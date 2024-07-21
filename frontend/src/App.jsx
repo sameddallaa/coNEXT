@@ -11,7 +11,6 @@ import ProtectedRoute from "./Routes/ProtectedRoute.jsx";
 import Homepage from "./Components/Homepage.jsx";
 import Chats from "./Components/Chats.jsx";
 function App() {
-  console.log();
   return (
     <BrowserRouter>
       <AuthProvider>

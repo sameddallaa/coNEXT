@@ -25,10 +25,8 @@ const Messages = () => {
         const data = response.data;
         if (response.status === 200) {
           setChats(data.chats);
-          console.log(data.chats);
+
           setLoading(false);
-        } else {
-          console.log(response);
         }
       } catch (err) {
         console.log(err);

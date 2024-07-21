@@ -28,16 +28,14 @@ const Homepage = () => {
         });
         if (response.status === 200) {
           const data = response.data;
-          console.log(data);
+
           setFeed(data);
         }
       } catch (error) {
         console.error(error);
-        console.log(token.access);
       } finally {
         setLoading(false);
         console.log("Fetch completed");
-        console.log(feed);
       }
     }
     fetchFeed();

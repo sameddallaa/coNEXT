@@ -63,7 +63,6 @@ const AddPost = ({ image }) => {
       console.log(err);
       setSuccess(false);
     } finally {
-      console.log(formData);
       setLoading(false);
     }
   };

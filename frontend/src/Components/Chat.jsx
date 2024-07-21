@@ -34,7 +34,6 @@ const Chat = ({ messages, setMessages, chatId }) => {
 
   useEffect(() => {
     setChat(chatId);
-    console.log(chat);
   }, [chatId]);
   useEffect(() => {
     setMessage((prevMessage) => ({ ...prevMessage, receiver: contact.id }));
@@ -162,7 +161,6 @@ const Chat = ({ messages, setMessages, chatId }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(message);
-    // console.log(socket);
     socketRef.current.send(JSON.stringify(message));
 
     bodyRef.current.value = "";

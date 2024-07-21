@@ -10,12 +10,9 @@ import { FiSend } from "react-icons/fi";
 const Post = ({ image, post }) => {
   const { timeAgo } = useContext(UtilsContext);
   const [show, setShow] = useState(false);
-  const [fileUrl, setFileUrl] = useState("");
-  console.log(post.attachment);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleDownload = ({ url }) => {
-    console.log(url);
     const fileName = url.split("/").pop();
     console.log(fileName);
     const aTag = document.createElement("a");
