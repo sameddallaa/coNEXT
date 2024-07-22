@@ -114,11 +114,18 @@ class Request(models.Model):
     def __str__(self):
         return f"{self.users.first()} &  {self.users.last()} - {self.status}"
 
-    def save(self, *args, **kwargs):
-        if self.status == "friends" and (
-            self.users.first() not in self.users.last().friends.all()
-            or self.users.last() not in self.users.first().friends.all()
-        ):
-            self.users.first().friends.add(self.users.last())
-            self.users.last().friends.add(self.users.first())
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     if self.status == "friends" and (
+    #         self.users.first() not in self.users.last().friends.all()
+    #         or self.users.last() not in self.users.first().friends.all()
+    #     ):
+    #         self.users.first().friends.add(self.users.last())
+    #         self.users.last().friends.add(self.users.first())
+
+    #     if (self.status == "non-friends" or self.status == 'pending') and (
+    #         self.users.first() in self.users.last().friends.all()
+    #         or self.users.last() in self.users.first().friends.all()
+    #     ):
+    #         self.users.first().friends.remove(self.users.last())
+    #         self.users.last().friends.remove(self.users.first())
+    #     super().save(*args, **kwargs)

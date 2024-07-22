@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, Request
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework.exceptions import ValidationError
 from datetime import date
@@ -166,3 +166,9 @@ class UserChatsSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "email", "username", "profile_image", "chats"]
+
+
+class RequestSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Request
+        fields = "__all__"

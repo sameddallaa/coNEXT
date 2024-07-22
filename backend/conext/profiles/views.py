@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework.generics import ListAPIView, RetrieveAPIView
-from .models import User
+from .models import User, Request
 from .serializers import (
     UserSerializer,
     MyTokenObtainPairSerializer,
@@ -9,6 +9,7 @@ from .serializers import (
     UserChatsSerializer,
     PublicProfileSerializer,
     UserProfileImageSerializer,
+    RequestSerializer,
 )
 from .permissions import IsOwnerOrAdmin
 from rest_framework.views import APIView, Response, status
@@ -18,6 +19,7 @@ from rest_framework.generics import GenericAPIView, UpdateAPIView
 from rest_framework import permissions, authentication
 from posts.models import Post
 from posts.serializers import PostSerializer
+from rest_framework.authentication import SessionAuthentication
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -124,28 +126,22 @@ class EditProfileView(UpdateAPIView):
     queryset = User.objects.all()
     serializer_class = PublicProfileSerializer
 
-    # def post(self, request, *args, **kwargs):
-    #     user = kwargs.get("pk")
-    #     try:
-    #         user = User.objects.get(pk=user)
-    #     except User.DoesNotExist:
-    #         return Response(
-    #             {"error": "User does not exist"}, status=status.HTTP_404_NOT_FOUND
-    #         )
 
-    #     fields = {
-    #         "first_name": request.data.get("first_name", None),
-    #         "last_name": request.data.get("last_name", None),
-    #         "bio": request.data.get("bio", None),
-    #         "profile_image": request.data.get("profile_image", None),
-    #     }
+class RequestCreateView(GenericAPIView):
+    queryset = Request.objects.all()
+    serializer_class = RequestSerializer
+    authentication_classes = [JWTAuthentication, SessionAuthentication]
 
-    #     for field, value in fields:
-    #         if value is not None:
-    #             setattr(user, field, value)
-
-    #     user.save()
-
-    #     return Response(
-    #         {"success": "user updated successfully"}, status=status.HTTP_200_OK
-    #     )
+    def get(self, request, *args, **kwargs):
+        user1 = request.user
+        user2 = User.objects.filter(pk=kwargs.get("pk")).first()
+        if Request.objects.filter(users=user1).filter(users=user2).exists():
+            request_ins = (
+                Request.objects.filter(users=user1).filter(users=user2).first()
+            )
+            serializer = self.serializer_class(request_ins)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        request_ins = Request.objects.create()
+        request_ins.users.add(user1, user2)
+        serializer = self.serializer_class(request_ins)
+        return Response(serializer.data, status=status.HTTP_200_OK)
