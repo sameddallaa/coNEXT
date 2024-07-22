@@ -46,6 +46,6 @@ class LikePostView(APIView):
         post = get_object_or_404(Post, pk=pk)
         if post.likes.filter(id=request.user.id).exists():
             post.likes.remove(request.user)
-            return Response({"message": "Like removed"}, status=status.HTTP_200_OK)
+            return Response({"message": "liked"}, status=status.HTTP_200_OK)
         post.likes.add(request.user)
-        return Response({"message": "Like added"}, status=status.HTTP_200_OK)
+        return Response({"message": "unliked"}, status=status.HTTP_200_OK)

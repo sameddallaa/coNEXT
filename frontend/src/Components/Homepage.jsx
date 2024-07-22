@@ -28,7 +28,6 @@ const Homepage = () => {
         });
         if (response.status === 200) {
           const data = response.data;
-
           setFeed(data);
         }
       } catch (error) {

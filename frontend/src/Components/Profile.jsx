@@ -10,6 +10,8 @@ import { Link } from "react-router-dom";
 import AuthContext from "../Contexts/AuthContext";
 import Post from "./Post";
 import AddPost from "./AddPost";
+import noFeed from "../assets/animations/noFeed.json";
+
 const Profile = () => {
   const { profileId } = useParams();
   const { user, profileImage } = useContext(AuthContext);
@@ -207,7 +209,7 @@ const Profile = () => {
                       </span>
                     </div>
                     {!editing ? (
-                      <p className="m-1 fs-5">{profile.bio}</p>
+                      <p className="m-1">{profile.bio}</p>
                     ) : (
                       <Form>
                         <Form.Control
@@ -276,12 +278,27 @@ const Profile = () => {
             <Col>
               <div className="m-3 p-2 rounded bg-secondary">
                 <AddPost image={profileImage} />
-                <span className="ms-3 text-light">
-                  {profile.first_name}'s posts
-                </span>
-                {posts?.map((post, index) => (
-                  <Post image={profile.profile_image} post={post} key={index} />
-                ))}
+                <>
+                  <span className="ms-3 text-light">
+                    {profile.first_name}'s posts
+                  </span>
+                  {posts.length > 0 ? (
+                    posts.map((post, index) => (
+                      <Post
+                        image={profile.profile_image}
+                        post={post}
+                        key={index}
+                      />
+                    ))
+                  ) : (
+                    <div className="d-flex justify-content-center">
+                      <Lottie
+                        animationData={noFeed}
+                        style={{ width: "300px" }}
+                      />
+                    </div>
+                  )}
+                </>
               </div>
             </Col>
           </>
