@@ -98,3 +98,27 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+RELATIONSHIPS = (
+    ("friends", "friends"),
+    ("pending", "pending"),
+    ("non-friends", "non-friends"),
+)
+
+
+class Request(models.Model):
+    users = models.ManyToManyField(User, related_name="relationships")
+    status = models.CharField(max_length=255, choices=RELATIONSHIPS, default="pending")
+
+    def __str__(self):
+        return f"{self.users.first()} &  {self.users.last()} - {self.status}"
+
+    def save(self, *args, **kwargs):
+        if self.status == "friends" and (
+            self.users.first() not in self.users.last().friends.all()
+            or self.users.last() not in self.users.first().friends.all()
+        ):
+            self.users.first().friends.add(self.users.last())
+            self.users.last().friends.add(self.users.first())
+        super().save(*args, **kwargs)

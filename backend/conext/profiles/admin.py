@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User
+from .models import User, Request
 from django.contrib.auth.admin import UserAdmin as BaseAdmin
 
 # Register your models here.
@@ -71,3 +71,4 @@ class UserAdmin(BaseAdmin):
 
 
 admin.site.register(User, UserAdmin)
+admin.site.register(Request)
