@@ -7,8 +7,6 @@ from .serializers import PostSerializer, NewPostSerializer
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.authentication import SessionAuthentication
 
-# Create your views here.
-
 
 class PostsListView(ListAPIView):
     queryset = Post.objects.all()
@@ -36,12 +34,18 @@ class LikePostView(APIView):
     serializer_class = PostSerializer
     authentication_classes = [JWTAuthentication, SessionAuthentication]
 
+    def get(self, request, *args, **kwargs):
+        pk = kwargs.get("pk")
+        post = get_object_or_404(Post, pk=pk)
+        if post.likes.filter(id=request.user.id).exists():
+            return Response({"message": "liked"}, status=status.HTTP_200_OK)
+        return Response({"message": "unliked"}, status=status.HTTP_200_OK)
+
     def post(self, request, *args, **kwargs):
         pk = kwargs.get("pk")
         post = get_object_or_404(Post, pk=pk)
         if post.likes.filter(id=request.user.id).exists():
             post.likes.remove(request.user)
             return Response({"message": "Like removed"}, status=status.HTTP_200_OK)
-        else:
-            post.likes.add(request.user)
-            return Response({"message": "Like added"}, status=status.HTTP_200_OK)
+        post.likes.add(request.user)
+        return Response({"message": "Like added"}, status=status.HTTP_200_OK)
