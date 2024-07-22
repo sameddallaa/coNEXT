@@ -1,15 +1,17 @@
 import React, { useContext, useState } from "react";
-import pfp from "../assets/img/pfp.jpg";
-import { Container, Image, Modal, Button } from "react-bootstrap";
+import { Image, Modal, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import UtilsContext from "../Contexts/UtilsContext";
 import { BsThreeDots } from "react-icons/bs";
 import { FaRegHeart, FaRegComment } from "react-icons/fa";
 import { FiSend } from "react-icons/fi";
+import heartFull from "../assets/img/heartFull.svg";
+import heartEmpty from "../assets/img/heartEmpty.svg";
 
 const Post = ({ image, post }) => {
   const { timeAgo } = useContext(UtilsContext);
   const [show, setShow] = useState(false);
+  const [liked, setLiked] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const handleDownload = ({ url }) => {
@@ -67,7 +69,8 @@ const Post = ({ image, post }) => {
         </div>
         <div className="d-flex w-50 my-2 ms-3">
           <div className="d-flex align-items-center mx-1">
-            <FaRegHeart />
+            <Image src={heartFull} width={20} />
+            <Image src={heartEmpty} width={20} />
             <p className="my-0 mx-1">{post.like_count}</p>
           </div>
           <div className="d-flex align-items-center mx-1">
