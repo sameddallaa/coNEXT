@@ -260,9 +260,14 @@ const Profile = () => {
                           </Button>
                         )
                       ) : (
-                        <Button className="rounded-pill mx-1" variant="success">
-                          Add friend
-                        </Button>
+                        !profile.friends.includes(user.user_id) && (
+                          <Button
+                            className="rounded-pill mx-1"
+                            variant="success"
+                          >
+                            Add friend
+                          </Button>
+                        )
                       )}
                       <Button
                         className="rounded-pill mx-1"

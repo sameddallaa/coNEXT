@@ -39,6 +39,7 @@ const LeftSidebar = ({ owner }) => {
                   key={index}
                   className="text-decoration-none text-success"
                   style={{ fontWeight: 500 }}
+                  to={`profiles/${friend.id}`}
                 >
                   {friend.full_name}
                 </Link>

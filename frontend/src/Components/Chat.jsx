@@ -187,7 +187,10 @@ const Chat = ({ messages, setMessages, chatId }) => {
               <div className="d-flex flex-column align-items-center justify-content-center bg-secondary py-2 px-0">
                 {!loading && (
                   <Row className="m-0 d-flex justify-content-center">
-                    <Link className="text-decoration-none text-light fw-bold d-flex flex-column align-items-center">
+                    <Link
+                      className="text-decoration-none text-light fw-bold d-flex flex-column align-items-center"
+                      to={`/profiles/${contact.id}`}
+                    >
                       <Image
                         src={contact.profile_image}
                         roundedCircle
@@ -209,7 +212,10 @@ const Chat = ({ messages, setMessages, chatId }) => {
                       variant="success"
                       className="rounded-pill py-1 px-2 mt-2"
                     >
-                      <Link className="text-decoration-none text-light fw-bold d-flex justify-content-center">
+                      <Link
+                        className="text-decoration-none text-light fw-bold d-flex justify-content-center"
+                        to={`/profiles/${contact.id}`}
+                      >
                         Visit profile
                       </Link>
                     </Button>
