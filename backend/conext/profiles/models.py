@@ -108,11 +108,16 @@ RELATIONSHIPS = (
 
 
 class Request(models.Model):
-    users = models.ManyToManyField(User, related_name="relationships")
+    sender = models.ForeignKey(
+        User, related_name="sent_requests", on_delete=models.CASCADE
+    )
+    receiver = models.ForeignKey(
+        User, related_name="received_requests", on_delete=models.CASCADE
+    )
     status = models.CharField(max_length=255, choices=RELATIONSHIPS, default="pending")
 
     def __str__(self):
-        return f"{self.users.first()} &  {self.users.last()} - {self.status}"
+        return f"{self.sender} to {self.receiver} - {self.status}"
 
     # def save(self, *args, **kwargs):
     #     if self.status == "friends" and (

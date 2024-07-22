@@ -135,13 +135,35 @@ class RequestCreateView(GenericAPIView):
     def get(self, request, *args, **kwargs):
         user1 = request.user
         user2 = User.objects.filter(pk=kwargs.get("pk")).first()
-        if Request.objects.filter(users=user1).filter(users=user2).exists():
-            request_ins = (
-                Request.objects.filter(users=user1).filter(users=user2).first()
-            )
+        if Request.objects.filter(sender=user1, receiver=user2).exists():
+            request_ins = Request.objects.filter(sender=user1, receiver=user2).first()
             serializer = self.serializer_class(request_ins)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        request_ins = Request.objects.create()
-        request_ins.users.add(user1, user2)
+        if Request.objects.filter(receiver=user1, sender=user2).exists():
+            request_ins = Request.objects.filter(receiver=user1, sender=user2).first()
+            serializer = self.serializer_class(request_ins)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        request_ins = Request.objects.create(sender=user1, receiver=user2)
+        request_ins.save()
         serializer = self.serializer_class(request_ins)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        user1 = request.user
+        user2 = User.objects.filter(pk=kwargs.get("pk")).first()
+        status_ = request.data.get("status", "pending")
+        if Request.objects.filter(sender=user1, receiver=user2).exists():
+            request_ins = Request.objects.filter(sender=user1, receiver=user2).first()
+            request_ins.status = status_
+            request_ins.save()
+            return Response({"message": "done"}, status=status.HTTP_200_OK)
+        if Request.objects.filter(receiver=user1, sender=user2).exists():
+            request_ins = Request.objects.filter(receiver=user1, sender=user2).first()
+            request_ins.status = status_
+            request_ins.save()
+            return Response({"message": "done"}, status=status.HTTP_200_OK)
+        request_ins = Request.objects.create(
+            sender=user1, receiver=user2, status=status_
+        )
+        request_ins.save()
+        return Response({"message": "done"}, status=status.HTTP_200_OK)

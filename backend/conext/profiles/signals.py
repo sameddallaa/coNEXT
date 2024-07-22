@@ -5,16 +5,16 @@ from .models import Request, User
 
 @receiver(post_save, sender=Request)
 def create_user_requests(sender, instance, created, **kwargs):
-    user1 = instance.users.first()
-    user2 = instance.users.last()
+    sender_ = instance.sender
+    receiver = instance.receiver
     if instance.status == "pending" or instance.status == "non-friends":
-        if user1 in user2.friends.all() or user2 in user1.friends.all():
-            user1.friends.remove(user2)
-            user2.friends.remove(user1)
+        if sender_ in receiver.friends.all() or receiver in sender_.friends.all():
+            sender_.friends.remove(receiver)
+            receiver.friends.remove(sender_)
             instance.save()
 
     elif instance.status == "friends":
-        if user1 not in user2.friends.all() or user2 not in user1.friends.all():
-            user1.friends.add(user2)
-            user2.friends.add(user1)
+        if sender_ not in receiver.friends.all() or receiver not in sender_.friends.all():
+            sender_.friends.add(receiver)
+            receiver.friends.add(sender_)
             instance.save()
