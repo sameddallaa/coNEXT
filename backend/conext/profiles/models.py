@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from datetime import date
 from .validators import validate_birthdate, validate_username
+from django.core.exceptions import ValidationError
 
 # Create your models here.
 
@@ -114,23 +115,19 @@ class Request(models.Model):
     receiver = models.ForeignKey(
         User, related_name="received_requests", on_delete=models.CASCADE
     )
-    status = models.CharField(max_length=255, choices=RELATIONSHIPS, default="pending")
+    status = models.CharField(
+        max_length=255, choices=RELATIONSHIPS, default="non-friends"
+    )
 
     def __str__(self):
         return f"{self.sender} to {self.receiver} - {self.status}"
 
-    # def save(self, *args, **kwargs):
-    #     if self.status == "friends" and (
-    #         self.users.first() not in self.users.last().friends.all()
-    #         or self.users.last() not in self.users.first().friends.all()
-    #     ):
-    #         self.users.first().friends.add(self.users.last())
-    #         self.users.last().friends.add(self.users.first())
-
-    #     if (self.status == "non-friends" or self.status == 'pending') and (
-    #         self.users.first() in self.users.last().friends.all()
-    #         or self.users.last() in self.users.first().friends.all()
-    #     ):
-    #         self.users.first().friends.remove(self.users.last())
-    #         self.users.last().friends.remove(self.users.first())
-    #     super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        if (
+            Request.objects.filter(sender=self.sender, receiver=self.receiver).exists()
+            or Request.objects.filter(
+                sender=self.receiver, receiver=self.sender
+            ).exists()
+        ):
+            raise ValidationError("Request already exists")
+        super().save(*args, **kwargs)

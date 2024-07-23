@@ -43,6 +43,27 @@ class UserListView(ListAPIView):
 class UserRetrieveView(RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    authentication_classes = [JWTAuthentication, SessionAuthentication]
+
+    def get(self, request, *args, **kwargs):
+        user1 = request.user
+        user2 = User.objects.filter(pk=kwargs["pk"]).first()
+        serialized_user = UserSerializer(user2, context={"request": request}).data
+        if Request.objects.filter(sender=user1, receiver=user2).exists():
+            request_ins = Request.objects.get(sender=user1, receiver=user2)
+            serialized_request = RequestSerializer(request_ins).data
+            serialized_user["request"] = serialized_request
+            return Response(serialized_user, status=status.HTTP_200_OK)
+        if Request.objects.filter(sender=user2, receiver=user1).exists():
+            request_ins = Request.objects.get(sender=user2, receiver=user1)
+            serialized_request = RequestSerializer(request_ins).data
+            serialized_user["request"] = serialized_request
+            return Response(serialized_user, status=status.HTTP_200_OK)
+        request_ins = Request.objects.create(sender=user1, receiver=user2)
+        request_ins.save()
+        serialized_request = RequestSerializer(request_ins).data
+        serialized_user["request"] = serialized_request
+        return Response(serialized_user, status=status.HTTP_200_OK)
 
 
 class SignupView(GenericAPIView):
@@ -151,7 +172,7 @@ class RequestCreateView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         user1 = request.user
         user2 = User.objects.filter(pk=kwargs.get("pk")).first()
-        status_ = request.data.get("status", "pending")
+        status_ = request.data.get("status", "non-friends")
         if Request.objects.filter(sender=user1, receiver=user2).exists():
             request_ins = Request.objects.filter(sender=user1, receiver=user2).first()
             request_ins.status = status_
