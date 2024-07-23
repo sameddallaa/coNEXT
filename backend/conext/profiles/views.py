@@ -12,7 +12,7 @@ from .serializers import (
     RequestSerializer,
 )
 from .permissions import IsOwnerOrAdmin
-from rest_framework.views import APIView, Response, status
+from rest_framework.views import Response, status
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.generics import GenericAPIView, UpdateAPIView
@@ -20,6 +20,7 @@ from rest_framework import permissions, authentication
 from posts.models import Post
 from posts.serializers import PostSerializer
 from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
 class MyTokenObtainPairView(TokenObtainPairView):
@@ -43,7 +44,8 @@ class UserListView(ListAPIView):
 class UserRetrieveView(RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    authentication_classes = [JWTAuthentication, SessionAuthentication]
+    authentication_classes = [SessionAuthentication, JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         user1 = request.user
@@ -60,7 +62,6 @@ class UserRetrieveView(RetrieveAPIView):
             serialized_user["request"] = serialized_request
             return Response(serialized_user, status=status.HTTP_200_OK)
         request_ins = Request.objects.create(sender=user1, receiver=user2)
-        request_ins.save()
         serialized_request = RequestSerializer(request_ins).data
         serialized_user["request"] = serialized_request
         return Response(serialized_user, status=status.HTTP_200_OK)

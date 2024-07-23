@@ -80,7 +80,7 @@ const Profile = () => {
         const response = await axios.get(PROFILE_ENDPOINT, {
           headers: {
             "Content-Type": "application/json",
-            Authorization: tokens.access,
+            Authorization: `Bearer ${tokens.access}`,
           },
         });
         const data = response.data;
@@ -260,14 +260,13 @@ const Profile = () => {
                           </Button>
                         )
                       ) : (
-                        !profile.friends.includes(user.user_id) && (
-                          <Button
-                            className="rounded-pill mx-1"
-                            variant="success"
-                          >
-                            Add friend
-                          </Button>
-                        )
+                        <Button className="rounded-pill mx-1" variant="success">
+                          {profile.request.status === "friends"
+                            ? "Remove friend"
+                            : profile.request.status === "pending"
+                            ? "Pending request"
+                            : "Add friend"}
+                        </Button>
                       )}
                       <Button
                         className="rounded-pill mx-1"

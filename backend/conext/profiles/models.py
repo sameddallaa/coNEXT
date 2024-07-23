@@ -124,10 +124,12 @@ class Request(models.Model):
 
     def save(self, *args, **kwargs):
         if (
-            Request.objects.filter(sender=self.sender, receiver=self.receiver).exists()
-            or Request.objects.filter(
-                sender=self.receiver, receiver=self.sender
-            ).exists()
+            Request.objects.filter(sender=self.sender, receiver=self.receiver)
+            .exclude(pk=self.pk)
+            .exists()
+            or Request.objects.filter(sender=self.receiver, receiver=self.sender)
+            .exclude(pk=self.pk)
+            .exists()
         ):
             raise ValidationError("Request already exists")
         super().save(*args, **kwargs)
