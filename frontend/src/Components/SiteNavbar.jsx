@@ -53,7 +53,7 @@ const SiteNavbar = () => {
               </Nav.Link>
               <Nav.Link
                 className="d-flex align-items-center mx-1 text-dark"
-                href="#services"
+                href="/friends/"
                 style={{ fontWeight: "500" }}
               >
                 <FaUserFriends className="me-1 text-success" />

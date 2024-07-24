@@ -1,0 +1,13 @@
+.friendContainer:hover {
+  background-color: #c4c4c4 !important;
+  transition: all 0.3s ease;
+  transform: scale(1.05);
+}
+
+.friendContainer .deleteBtn {
+  display: none !important;
+}
+
+.friendContainer:hover .deleteBtn {
+  display: block !important;
+}

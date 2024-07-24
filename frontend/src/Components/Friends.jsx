@@ -1,24 +1,73 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Row } from "react-bootstrap";
 import SiteNavbar from "./SiteNavbar";
 import AuthContext from "../Contexts/AuthContext";
-
+import axios from "axios";
+import { useParams } from "react-router";
+import Friend from "./Friend";
+import Lottie from "lottie-react";
+import noFriendAnimation from "../assets/animations/noFriends.json";
 const Friends = () => {
   const { user } = useContext(AuthContext);
+  const tokens = JSON.parse(localStorage.getItem("tokens"));
   const [friends, setFriends] = useState([]);
+  const { user_id } = useParams();
+  const [userId, setUserId] = useState(user_id ? user_id : user.user_id);
   useEffect(() => {
-    async function fetchFriends(){
-        c
+    async function fetchFriends() {
+      const FRIENDS_ENDPOINT = `http://localhost:8000/api/users/${userId}/friends`;
+      try {
+        const response = await axios.get(FRIENDS_ENDPOINT, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokens.access}`,
+          },
+        });
+        if (response.status === 200) {
+          const { data } = response;
+          setFriends(data);
+        }
+      } catch (err) {
+        console.log(err);
+      }
     }
-  }, [friends]);
+    fetchFriends();
+  }, [userId]);
 
+  useEffect(() => {
+    console.log(friends);
+  }, [friends]);
   return (
     <>
-      <Row>
+      <Row className="m-0">
         <SiteNavbar />
       </Row>
-      <Row>
-        <h1>{user.name}'s Friends</h1>
+      <Row className="mx-1 p-0">
+        <div className="py-2 bg-secondary vh-100 mt-1 rounded-top">
+          <h1>{userId == user.user_id ? "Your" : user.name + "'s"} friends</h1>
+          <div className="d-flex flex-column align-items-center">
+            {friends.length > 0 ? (
+              friends.map((friend, index) => {
+                return (
+                  <Friend
+                    friend={friend}
+                    setFriends={setFriends}
+                    key={index}
+                    userId={userId}
+                  />
+                );
+              })
+            ) : (
+              <>
+                <Lottie
+                  animationData={noFriendAnimation}
+                  style={{ width: "240px" }}
+                />
+                <h3 className="text-light">No friends, yet</h3>
+              </>
+            )}
+          </div>
+        </div>
       </Row>
     </>
   );

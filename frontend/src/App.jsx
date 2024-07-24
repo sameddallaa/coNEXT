@@ -20,7 +20,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="/" exact element={<Homepage />} />
               <Route path="/chats/:chatId?" element={<Chats />} />
-              <Route path="/friends" element={<Friends />} />
+              <Route path="/friends/:user_id?" element={<Friends />} />
             </Route>
             <Route element={<LoggedOutRoute />}>
               <Route path="/signup" element={<Signup />} />
