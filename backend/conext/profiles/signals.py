@@ -7,7 +7,7 @@ from .models import Request, User
 def create_user_requests(sender, instance, created, **kwargs):
     sender_ = instance.sender
     receiver = instance.receiver
-    if instance.status == "pending" or instance.status == "non-friends":
+    if instance.status == "pending":
         if sender_ in receiver.friends.all() or receiver in sender_.friends.all():
             sender_.friends.remove(receiver)
             receiver.friends.remove(sender_)

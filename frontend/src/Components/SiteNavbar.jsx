@@ -75,19 +75,20 @@ const SiteNavbar = () => {
                 <FaBell className="me-1 text-success" />
                 Notifications
               </Nav.Link>
-              <Nav.Link
+              {/* <Nav.Link
                 className="d-flex align-items-center mx-1 text-dark"
                 href="#contact"
                 style={{ fontWeight: "500" }}
               >
                 <FaGear className="me-1 text-success" />
                 Settings
-              </Nav.Link>
+              </Nav.Link> */}
               {width < 992 && (
                 <Nav.Link
                   className="d-flex align-items-center mx-1 text-dark"
                   href="#contact"
                   style={{ fontWeight: "500" }}
+                  onClick={() => logout()}
                 >
                   <FaPowerOff className="me-1 text-success" />
                   Log out
@@ -106,7 +107,7 @@ const SiteNavbar = () => {
               More
             </Dropdown.Toggle>
             <Dropdown.Menu className="p-0">
-              <Dropdown.Item onClick={() => logout()}>Logout</Dropdown.Item>
+              <Dropdown.Item onClick={() => logout()}>Log out</Dropdown.Item>
               <Dropdown.Item>Credits</Dropdown.Item>
               <Dropdown.Item>Contact us</Dropdown.Item>
             </Dropdown.Menu>

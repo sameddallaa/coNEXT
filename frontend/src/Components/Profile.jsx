@@ -4,14 +4,15 @@ import SiteNavbar from "./SiteNavbar";
 import { Row, Col, Image, Button, Form, InputGroup } from "react-bootstrap";
 import Lottie from "lottie-react";
 import loadingAnimation from "../assets/animations/loadingAnimation.json";
-import { FaPencil } from "react-icons/fa6";
+import { FaPencil, FaX } from "react-icons/fa6";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import AuthContext from "../Contexts/AuthContext";
 import Post from "./Post";
 import AddPost from "./AddPost";
 import noFeed from "../assets/animations/noFeed.json";
-
+import { FaClock } from "react-icons/fa";
+import classes from "../CSS/Profile.module.css";
 const Profile = () => {
   const { profileId } = useParams();
   const { user, profileImage } = useContext(AuthContext);
@@ -99,6 +100,9 @@ const Profile = () => {
   }, [profileId, profileUpdated]);
 
   useEffect(() => {
+    console.log(profile);
+  }, [profile]);
+  useEffect(() => {
     async function fetchPosts() {
       try {
         const POSTS_ENDPOINT = `http://localhost:8000/api/users/${profile.id}/posts`;
@@ -123,6 +127,29 @@ const Profile = () => {
     }
     fetchPosts();
   }, [profile]);
+
+  const handleRequest = async (status) => {
+    const REQUEST_ENDPOINT = `http://localhost:8000/api/users/requests/${profile.id}`;
+    try {
+      const response = await axios.post(
+        REQUEST_ENDPOINT,
+        { status: status },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokens.access}`,
+          },
+        }
+      );
+      if (response.status === 200) {
+        const { data } = response;
+        setProfile(data);
+        console.log(data);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
   return (
     <>
       <Row className="m-0 sticky-top">
@@ -209,7 +236,9 @@ const Profile = () => {
                       </span>
                     </div>
                     {!editing ? (
-                      <p className="m-1">{profile.bio}</p>
+                      <div style={{ wordBreak: "break-all" }}>
+                        <p className="m-1">{profile.bio}</p>
+                      </div>
                     ) : (
                       <Form>
                         <Form.Control
@@ -260,14 +289,56 @@ const Profile = () => {
                           </Button>
                         )
                       ) : (
-                        <Button className="rounded-pill mx-1" variant="success">
-                          {profile.request.status === "friends"
-                            ? "Remove friend"
-                            : profile.request.status === "pending"
-                            ? "Pending request"
-                            : "Add friend"}
+                        <Button
+                          className={`rounded-pill mx-1 d-flex align-items-center 
+                            ${
+                              profile?.request
+                                ? profile.request.status === "friends"
+                                  ? classes.friends
+                                  : classes.pending
+                                : classes.nonFriends
+                            }
+                          `}
+                          variant="success"
+                          onClick={
+                            profile?.request
+                              ? profile.request.status === "friends"
+                                ? () => handleRequest("remove")
+                                : profile.request.sender === user.user_id
+                                ? () => handleRequest("remove")
+                                : () => handleRequest("friends")
+                              : () => handleRequest("pending")
+                          }
+                        >
+                          {profile?.request ? (
+                            profile.request.status === "friends" ? (
+                              <>
+                                <FaX className="me-1" />
+                                Remove friend
+                              </>
+                            ) : profile.request.sender === user.user_id ? (
+                              <>
+                                <FaClock className="me-1" />
+                                Pending request
+                              </>
+                            ) : (
+                              "Accept request"
+                            )
+                          ) : (
+                            "Add friend"
+                          )}
                         </Button>
                       )}
+                      {profile?.request?.status === "pending" &&
+                        profile?.request?.receiver === user.user_id && (
+                          <Button
+                            className="rounded-pill mx-1 d-flex align-items-center"
+                            variant="outline-danger"
+                            onClick={() => handleRequest("remove")}
+                          >
+                            Delete request
+                          </Button>
+                        )}
                       <Button
                         className="rounded-pill mx-1"
                         variant="outline-success"
@@ -284,7 +355,7 @@ const Profile = () => {
                 <AddPost image={profileImage} />
                 <>
                   <span className="ms-3 text-light">
-                    {profile.first_name}'s posts
+                    {posts.length > 0 && profile.first_name + "'s posts"}
                   </span>
                   {posts.length > 0 ? (
                     posts.map((post, index) => (

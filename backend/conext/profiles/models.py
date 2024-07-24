@@ -104,7 +104,6 @@ class User(AbstractUser):
 RELATIONSHIPS = (
     ("friends", "friends"),
     ("pending", "pending"),
-    ("non-friends", "non-friends"),
 )
 
 
@@ -115,21 +114,26 @@ class Request(models.Model):
     receiver = models.ForeignKey(
         User, related_name="received_requests", on_delete=models.CASCADE
     )
-    status = models.CharField(
-        max_length=255, choices=RELATIONSHIPS, default="non-friends"
-    )
+    status = models.CharField(max_length=255, choices=RELATIONSHIPS, default="pending")
 
     def __str__(self):
         return f"{self.sender} to {self.receiver} - {self.status}"
 
     def save(self, *args, **kwargs):
         if (
-            Request.objects.filter(sender=self.sender, receiver=self.receiver)
+            Request.objects.filter(
+                sender=self.sender,
+                receiver=self.receiver,
+            )
             .exclude(pk=self.pk)
             .exists()
-            or Request.objects.filter(sender=self.receiver, receiver=self.sender)
+            or Request.objects.filter(
+                sender=self.receiver,
+                receiver=self.sender,
+            )
             .exclude(pk=self.pk)
             .exists()
         ):
             raise ValidationError("Request already exists")
+
         super().save(*args, **kwargs)
