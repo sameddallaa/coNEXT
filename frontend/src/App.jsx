@@ -10,6 +10,7 @@ import LoggedOutRoute from "./Routes/LoggedOutRoute.jsx";
 import ProtectedRoute from "./Routes/ProtectedRoute.jsx";
 import Homepage from "./Components/Homepage.jsx";
 import Chats from "./Components/Chats.jsx";
+import Friends from "./Components/Friends.jsx";
 function App() {
   return (
     <BrowserRouter>
@@ -19,6 +20,7 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="/" exact element={<Homepage />} />
               <Route path="/chats/:chatId?" element={<Chats />} />
+              <Route path="/friends" element={<Friends />} />
             </Route>
             <Route element={<LoggedOutRoute />}>
               <Route path="/signup" element={<Signup />} />

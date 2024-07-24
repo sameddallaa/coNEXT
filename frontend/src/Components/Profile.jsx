@@ -12,7 +12,6 @@ import Post from "./Post";
 import AddPost from "./AddPost";
 import noFeed from "../assets/animations/noFeed.json";
 import { FaClock } from "react-icons/fa";
-import classes from "../CSS/Profile.module.css";
 const Profile = () => {
   const { profileId } = useParams();
   const { user, profileImage } = useContext(AuthContext);
@@ -290,15 +289,7 @@ const Profile = () => {
                         )
                       ) : (
                         <Button
-                          className={`rounded-pill mx-1 d-flex align-items-center 
-                            ${
-                              profile?.request
-                                ? profile.request.status === "friends"
-                                  ? classes.friends
-                                  : classes.pending
-                                : classes.nonFriends
-                            }
-                          `}
+                          className={`rounded-pill mx-1 d-flex align-items-center`}
                           variant="success"
                           onClick={
                             profile?.request

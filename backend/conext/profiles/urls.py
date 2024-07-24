@@ -19,4 +19,9 @@ urlpatterns = [
         view=views.RequestCreateView.as_view(),
         name="RequestCreateView",
     ),
+    path(
+        "<int:pk>/friends",
+        view=views.FriendsRetrieveView.as_view(),
+        name="FriendsRetrieveView",
+    ),
 ]

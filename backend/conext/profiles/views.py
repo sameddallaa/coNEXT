@@ -232,3 +232,16 @@ class RequestCreateView(GenericAPIView):
                     {"detail": "Request does not exist"},
                     status=status.HTTP_404_NOT_FOUND,
                 )
+
+
+class FriendsRetrieveView(GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def get(self, request, *args, **kwargs):
+        user = User.objects.filter(pk=kwargs["pk"]).first()
+        friends = user.friends.all()
+        serializer = self.serializer_class(
+            friends, context={"request": request}, many=True
+        )
+        return Response(serializer.data, status=status.HTTP_200_OK)
