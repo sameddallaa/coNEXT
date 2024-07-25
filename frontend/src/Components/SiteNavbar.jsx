@@ -45,7 +45,7 @@ const SiteNavbar = () => {
             <>
               <Nav.Link
                 className="d-flex align-items-center mx-1 text-dark"
-                href="#about"
+                href="/"
                 style={{ fontWeight: "500" }}
               >
                 <FaHome className="me-1 text-success" />

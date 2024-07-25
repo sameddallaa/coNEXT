@@ -11,8 +11,37 @@ const Friends = () => {
   const { user } = useContext(AuthContext);
   const tokens = JSON.parse(localStorage.getItem("tokens"));
   const [friends, setFriends] = useState([]);
+  const [profile, setProfile] = useState({});
   const { user_id } = useParams();
   const [userId, setUserId] = useState(user_id ? user_id : user.user_id);
+  useEffect(() => {
+    console.log(profile);
+  }, [profile]);
+  useEffect(() => {
+    async function fetchProfile() {
+      if (userId != user.user_id) {
+        const PROFILE_ENDPOINT = `http://localhost:8000/api/users/${userId}`;
+        try {
+          const response = await axios.get(PROFILE_ENDPOINT, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${tokens.access}`,
+            },
+          });
+          if (response.status === 200) {
+            const { data } = response;
+            console.log(data);
+            setProfile(data);
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      } else {
+        setProfile(user);
+      }
+    }
+    fetchProfile();
+  }, [userId]);
   useEffect(() => {
     async function fetchFriends() {
       const FRIENDS_ENDPOINT = `http://localhost:8000/api/users/${userId}/friends`;
@@ -34,9 +63,6 @@ const Friends = () => {
     fetchFriends();
   }, [userId]);
 
-  useEffect(() => {
-    console.log(friends);
-  }, [friends]);
   return (
     <>
       <Row className="m-0">
@@ -44,7 +70,9 @@ const Friends = () => {
       </Row>
       <Row className="mx-1 p-0">
         <div className="py-2 bg-secondary vh-100 mt-1 rounded-top">
-          <h1>{userId == user.user_id ? "Your" : user.name + "'s"} friends</h1>
+          <h1>
+            {profile?.user_id ? "Your" : profile.full_name + "'s"} friends
+          </h1>
           <div className="d-flex flex-column align-items-center">
             {friends.length > 0 ? (
               friends.map((friend, index) => {

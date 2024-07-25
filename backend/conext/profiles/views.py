@@ -50,18 +50,24 @@ class UserRetrieveView(RetrieveAPIView):
     def get(self, request, *args, **kwargs):
         user1 = request.user
         user2 = User.objects.filter(pk=kwargs["pk"]).first()
-        serialized_user = UserSerializer(user2, context={"request": request}).data
-        if Request.objects.filter(sender=user1, receiver=user2).exists():
-            request_ins = Request.objects.get(sender=user1, receiver=user2)
-            serialized_request = RequestSerializer(request_ins).data
-            serialized_user["request"] = serialized_request
+        if user2:
+            serialized_user = UserSerializer(user2, context={"request": request}).data
+            if Request.objects.filter(sender=user1, receiver=user2).exists():
+                request_ins = Request.objects.get(sender=user1, receiver=user2)
+                serialized_request = RequestSerializer(request_ins).data
+                serialized_user["request"] = serialized_request
+                return Response(serialized_user, status=status.HTTP_200_OK)
+            if Request.objects.filter(sender=user2, receiver=user1).exists():
+                request_ins = Request.objects.get(sender=user2, receiver=user1)
+                serialized_request = RequestSerializer(request_ins).data
+                serialized_user["request"] = serialized_request
+                return Response(serialized_user, status=status.HTTP_200_OK)
             return Response(serialized_user, status=status.HTTP_200_OK)
-        if Request.objects.filter(sender=user2, receiver=user1).exists():
-            request_ins = Request.objects.get(sender=user2, receiver=user1)
-            serialized_request = RequestSerializer(request_ins).data
-            serialized_user["request"] = serialized_request
-            return Response(serialized_user, status=status.HTTP_200_OK)
-        return Response(serialized_user, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                {"error": "user with provided id does not exist"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
 
 class SignupView(GenericAPIView):

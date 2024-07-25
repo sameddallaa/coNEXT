@@ -8,8 +8,6 @@ import axios from "axios";
 const Friend = ({ friend, setFriends, userId }) => {
   const tokens = JSON.parse(localStorage.getItem("tokens"));
   const { user } = useContext(AuthContext);
-  console.log(userId);
-  console.log(user.user_id);
   const handleRemove = async (id) => {
     const REQUEST_ENDPOINT = `http://localhost:8000/api/users/requests/${id}`;
     try {
@@ -32,7 +30,7 @@ const Friend = ({ friend, setFriends, userId }) => {
     }
   };
   return (
-    <Link className="text-decoration-none text-dark">
+    <Link className="text-decoration-none text-dark w-100">
       <div className="d-flex justify-content-center">
         <div
           className={`m-1 py-1 px-3 rounded d-flex align-items-center justify-content-between w-75 ${classes.friendContainer}`}
